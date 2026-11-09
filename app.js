@@ -154,7 +154,17 @@
   // ================= TRẠNG THÁI HỘI THOẠI =================
   const PH = { idle: 'Nhập/dán thông tin chuyển tiền', askBank: 'Nhập tên ngân hàng', askAmount: 'Nhập số tiền', confirm: 'Nhập/dán thông tin chuyển tiền', busy: 'Nhập/dán thông tin chuyển tiền' };
   const st = { gen: 0, phase: 'idle', lookup: null, rec: null, src: SOURCES[0], amount: null, content: null, edit: null, slowUsed: false };
-  function setPhase(p) { st.phase = p; if (!st.edit) input.placeholder = PH[p] || PH.idle; }
+  function setPhase(p) {
+    st.phase = p; if (!st.edit) input.placeholder = PH[p] || PH.idle;
+    if (typeof setKbMode === 'function' && p !== 'busy' && !st.edit) setKbMode(p === 'askAmount' ? 'num' : 'abc');
+  }
+  // Hỏi số tiền → tự mở bàn phím số
+  function autoAmountKb() {
+    setKbMode('num');
+    if (coachStep || !navOpen || screen.classList.contains('sheet-open') || $('#confirmLayer').classList.contains('open')) return;
+    input.focus({ preventScroll: true });
+    if (!kbOpen()) openKb();
+  }
   const guard = () => { const g = st.gen; return async ms => { await sleep(ms); if (g !== st.gen) throw CANCEL; }; };
   const run = fn => fn().catch(e => { if (e !== CANCEL) console.error(e); });
 
@@ -352,6 +362,7 @@
     await botSay('Bạn muốn chuyển bao nhiêu tiền?', 600);
     setPhase('askAmount');
     setChips('input');
+    autoAmountKb();
   }
 
   function amountError(v) {
@@ -386,12 +397,14 @@
     $('#replyLabel').textContent = field === 'amount' ? 'Chỉnh sửa số tiền' : 'Chỉnh sửa nội dung';
     input.value = field === 'amount' ? fmtMoney(st.amount).replace('đ', '') : st.content;
     input.placeholder = field === 'amount' ? 'Nhập số tiền mới' : 'Nhập nội dung mới';
+    setKbMode(field === 'amount' ? 'num' : 'abc');
     syncHasText(); updateInset();
     input.focus();
     setTimeout(() => { try { input.select(); } catch (e) { /* noop */ } }, 0);
   }
   function cancelEdit() {
     st.edit = null; dock.classList.remove('editing'); input.value = ''; syncHasText(); setPhase(st.phase); updateInset();
+    if (st.phase === 'confirm') setKbMode('abc');
   }
   async function handleEdit(text) {
     if (st.edit === 'amount') {
@@ -435,7 +448,7 @@
     st.src = s;
     if (st.phase === 'confirm') return showConfirmBlock();
     setPhase('busy'); addBlock(infoBlock());
-    await botSay('Bạn muốn chuyển bao nhiêu tiền?', 500); setPhase('askAmount');
+    await botSay('Bạn muốn chuyển bao nhiêu tiền?', 500); setPhase('askAmount'); autoAmountKb();
   }
 
   // ---------- xác nhận (Gate 9) ----------
@@ -566,8 +579,20 @@
     dock.style.transform = ''; updateInset();
     if (!silent || document.activeElement === input) input.blur();
   }
+  const QUICK_AMOUNTS = [100000, 500000, 1000000];
+  const fmtDigits = v => { const d = String(v).replace(/\D/g, '').replace(/^0+(?=\d)/, ''); return d ? Number(d).toLocaleString('vi-VN').replace(/,/g, '.') : ''; };
+  function setKbMode(m) { if (kbMode === m) return; kbMode = m; shiftOn = false; buildKeyboard(); }
   function buildKeyboard() {
     const elx = $('#kbRows');
+    const sugg = $('.kb-sugg');
+    $('#kb').classList.toggle('num-mode', kbMode === 'num');
+    if (kbMode === 'num') {
+      sugg.innerHTML = QUICK_AMOUNTS.map((a, i) => (i ? '<i></i>' : '') + `<button class="amt-sug" data-amt="${a}" tabindex="-1">${fmtMoney(a)}</button>`).join('');
+      const k = (label, key, cls = '') => `<button class="key num ${cls}" data-key="${key}" tabindex="-1">${label}</button>`;
+      elx.innerHTML = `<div class="kb-num">${['1', '2', '3', '4', '5', '6', '7', '8', '9'].map(d => k(d, d)).join('')}${k('000', '000')}${k('0', '0')}${k(ICONS.bksp, 'back', 'fn')}</div>`;
+      return;
+    }
+    sugg.innerHTML = '<span>“The”</span><i></i><span>the</span><i></i><span>to</span>';
     const mk = (cls, label, key) => `<button class="key ${cls}" data-key="${esc(key)}" tabindex="-1">${label}</button>`;
     const row = keys => [...keys].map(k => mk('', shiftOn ? k.toUpperCase() : k, k)).join('');
     if (kbMode === 'abc') {
@@ -588,6 +613,16 @@
   }
   function onKey(key) {
     if (key === 'noop') return;
+    if (kbMode === 'num') {
+      let d = input.value.replace(/\D/g, '');
+      const sel = input.selectionStart !== input.selectionEnd && input.selectionEnd - input.selectionStart >= input.value.length;
+      if (sel) d = '';
+      if (key === 'back') d = d.slice(0, -1);
+      else if (/^\d+$/.test(key)) { if (d.length + key.length <= 12) d += key; }
+      input.value = fmtDigits(d);
+      try { input.setSelectionRange(input.value.length, input.value.length); } catch (e) { /* noop */ }
+      syncHasText(); return;
+    }
     if (key === 'shift') { shiftOn = !shiftOn; buildKeyboard(); return; }
     if (key === 'n123') { kbMode = kbMode === 'abc' ? '123' : 'abc'; buildKeyboard(); return; }
     if (key === 'back') {
@@ -660,6 +695,10 @@
     input.addEventListener('input', () => {
       // Bộ gõ tiếng Việt đôi khi gõ lại phần chữ vừa gửi ngay sau khi ô đã được xoá → bỏ phần thừa đó
       if (lastSent.text && Date.now() - lastSent.at < 400 && input.value.trim() && lastSent.text.endsWith(input.value.trim())) { input.value = ''; }
+      if ((st.phase === 'askAmount' && !st.edit) || st.edit === 'amount') {
+        const v = input.value;
+        if (/^[\d.\s]*$/.test(v) && v.replace(/\D/g, '').length) { const f = fmtDigits(v); if (f !== v) { input.value = f; try { input.setSelectionRange(f.length, f.length); } catch (er) { /* noop */ } } }
+      }
       syncHasText();
     });
     input.addEventListener('compositionstart', () => { composing = true; });
@@ -674,6 +713,8 @@
     tScroll.addEventListener('pointerdown', e => { if (kbOpen() && !e.target.closest('button, .row, .choose-row, .contact')) closeKb(); });
     $('#kb').addEventListener('pointerdown', e => {
       e.preventDefault();
+      const qa = e.target.closest('.amt-sug');
+      if (qa) { input.value = fmtDigits(qa.dataset.amt); syncHasText(); try { input.setSelectionRange(input.value.length, input.value.length); } catch (er) { /* noop */ } return; }
       const k = e.target.closest('.key'); if (!k) return;
       k.classList.add('pressed'); setTimeout(() => k.classList.remove('pressed'), 110);
       onKey(k.dataset.key);
