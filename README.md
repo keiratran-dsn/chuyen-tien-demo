@@ -17,7 +17,7 @@ Gõ vào ô chat rồi gửi (Enter / nút gửi), hoặc bấm các dòng mẫu
 
 | Dãy số | Kết quả |
 |---|---|
-| `0912 345 678` | SĐT có trong lịch sử → danh sách gộp + [Chọn ngân hàng] |
+| `0912 345 678` | SĐT có trong lịch sử → danh sách gộp + [Ngân hàng khác] |
 | `0987 654 321` | SĐT chưa có giao dịch → hỏi ngân hàng (bottom sheet) |
 | `0071000312345` | STK có trong lịch sử |
 | `19036688202401` | STK chưa có giao dịch → hỏi ngân hàng |

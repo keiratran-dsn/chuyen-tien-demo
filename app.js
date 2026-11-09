@@ -204,7 +204,7 @@
   function recRow(r, extra = '') { return `<div class="row fade-row" ${extra}>${logo(r.bank)}<div class="row-text"><div class="row-name">${esc(r.name)}</div><div class="row-desc">${esc(r.listDesc || recDesc(r))}</div></div>${chev}</div>`; }
   function listBlock(results, withChoose) {
     const n = el(`<div class="bot"><div class="glass list">${results.map((r, i) => (i ? '<div class="divider fade-row"></div>' : '') + recRow({ ...r, listDesc: r.bank === 'vtm' ? `${fmtPhoneDash(r.acct)} · Viettel Money` : `${r.acct} · ${BANKS[r.bank].name}` }, `data-i="${i}"`)).join('')}
-      ${withChoose ? `${results.length ? '<div class="divider fade-row"></div>' : ''}<div class="choose-row fade-row" data-choose>Chọn ngân hàng ${chev}</div>` : ''}</div></div>`);
+      ${withChoose ? `${results.length ? '<div class="divider fade-row"></div>' : ''}<div class="choose-row fade-row" data-choose>${results.length ? 'Ngân hàng khác' : 'Chọn ngân hàng'} ${chev}</div>` : ''}</div></div>`);
     $$('.row[data-i]', n).forEach(row => row.addEventListener('click', () => { const r = results[+row.dataset.i]; pickRecipient(r, `${r.name} · ${BANKS[r.bank].name}`); }));
     const ch = $('[data-choose]', n); if (ch) ch.addEventListener('click', openBankSheet);
     return n;
