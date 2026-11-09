@@ -59,7 +59,7 @@ button { font: inherit; color: inherit; border: 0; background: none; padding: 0;
   width: 375px; height: 812px; border-radius: 50px; overflow: hidden; position: relative;
   background: #fff; isolation: isolate;
 }
-.island { position: absolute; top: 11px; left: 50%; width: 120px; height: 34px; margin-left: -60px; background: #000; border-radius: 20px; z-index: 100; }
+.island { position: absolute; top: 10px; left: 50%; width: 92px; height: 26px; margin-left: -46px; background: #000; border-radius: 13px; z-index: 100; }
 .home-ind { position: absolute; left: 50%; bottom: 8px; width: 134px; height: 5px; margin-left: -67px; border-radius: 3px; background: #000; z-index: 99; pointer-events: none; }
 .status { position: absolute; left: 0; top: 0; width: 375px; height: 44px; z-index: 5; pointer-events: none; }
 .status svg { display: block; }
