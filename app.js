@@ -225,16 +225,18 @@
     const r = st.rec, s = st.src;
     const n = el(`<div class="bot"><div class="glass list">
       <div class="cf-title fade-row">Bạn vui lòng xác nhận thông tin chuyển tiền.</div>
-      <div class="cf-group fade-row"><div class="cf-label">Số tiền chuyển</div><div class="cf-amount">${fmtMoney(st.amount)}</div><div class="cf-label">${esc(vnWords(st.amount))} · Miễn phí giao dịch</div></div>
+      <div class="cf-group fade-row"><div class="cf-label">Số tiền chuyển</div><div class="cf-line"><div class="cf-amount">${fmtMoney(st.amount)}</div><button class="cf-edit" data-edit="amount" aria-label="Sửa số tiền">${ICONS.edit}</button></div><div class="cf-label">${esc(vnWords(st.amount))} · Miễn phí giao dịch</div></div>
       <div class="divider fade-row"></div>
-      <div class="row static-row fade-row"><img class="bank" src="${s.logo}" alt=""><div class="row-text"><div class="row-name">${esc(s.name)}</div><div class="row-desc">${esc(s.desc)}</div></div></div>
+      <div class="row fade-row" data-src><img class="bank" src="${s.logo}" alt=""><div class="row-text"><div class="row-name">${esc(s.name)}</div><div class="row-desc">${esc(s.desc)}</div></div>${chev}</div>
       <div class="sepline fade-row">${ICONS.sep}<i></i></div>
       <div class="row static-row fade-row">${logo(r.bank)}<div class="row-text"><div class="row-name">${esc(r.name)}</div><div class="row-desc">${esc(recDesc(r))}</div></div></div>
       <div class="divider fade-row"></div>
-      <div class="cf-group fade-row"><div class="cf-label">Nội dung</div><div class="cf-value">${esc(st.content)}</div></div>
+      <div class="cf-group fade-row"><div class="cf-label">Nội dung</div><div class="cf-line"><div class="cf-value">${esc(st.content)}</div><button class="cf-edit" data-edit="content" aria-label="Sửa nội dung">${ICONS.edit}</button></div></div>
       <button class="cf-btn fade-row" data-go>Tiếp tục</button>
     </div></div>`);
     $('[data-go]', n).addEventListener('click', openConfirm);
+    $('[data-src]', n).addEventListener('click', openSrcSheet);
+    $$('[data-edit]', n).forEach(b => b.addEventListener('click', () => startEdit(b.dataset.edit)));
     return n;
   }
 
@@ -410,12 +412,12 @@
   }
   async function handleEdit(text) {
     if (st.edit === 'amount') {
-      const v = parseAmount(text); addUser(v ? fmtMoney(v) : text);
+      const v = parseAmount(text); addUser(`Sửa số tiền: ${v ? fmtMoney(v) : text}`);
       const err = amountError(v);
       if (err) return botSay(err);
       st.amount = v;
     } else {
-      addUser(text); st.content = text;
+      addUser(`Sửa nội dung: ${text}`); st.content = text;
     }
     cancelEdit(); closeKb();
     await showConfirmBlock();
@@ -445,7 +447,7 @@
     const s = SOURCES.find(x => x.id === id);
     if (s.id === st.src.id) return;
     if (st.edit) cancelEdit();
-    addUser(`Nguồn tiền: ${s.name}`);
+    addUser(`${st.phase === 'confirm' ? 'Sửa nguồn tiền' : 'Nguồn tiền'}: ${s.name}`);
     if (st.amount && st.amount > s.balance) return botSay(`Số dư ${s.name} không đủ để chuyển ${fmtMoney(st.amount)}. Bạn chọn nguồn khác hoặc sửa số tiền nhé.`);
     st.src = s;
     if (st.phase === 'confirm') return showConfirmBlock();

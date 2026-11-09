@@ -464,3 +464,11 @@ button { font: inherit; color: inherit; border: 0; background: none; padding: 0;
 .kb.num-mode .kb-bottom { display: none; }
 .amt-sug { flex: 1; text-align: center; font-size: 16px; color: #111; height: 44px; }
 .amt-sug:active { background: rgba(0,0,0,.06); }
+
+/* nút sửa trong block xác nhận */
+.cf-line { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.cf-line .cf-value { flex: 1; min-width: 0; }
+.cf-edit { width: 32px; height: 32px; flex: 0 0 32px; border-radius: 50%; display: grid; place-items: center; background: rgba(34,34,34,.04); transition: background .15s, transform .12s; }
+.cf-edit:hover { background: rgba(34,34,34,.08); }
+.cf-edit:active { transform: scale(.92); }
+.cf-edit svg { display: block; width: 16px; height: 16px; }
