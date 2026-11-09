@@ -159,8 +159,8 @@
   const run = fn => fn().catch(e => { if (e !== CANCEL) console.error(e); });
 
   // ---------- render helpers ----------
-  function scrollBottom(smooth = true) { requestAnimationFrame(() => tScroll.scrollTo({ top: tScroll.scrollHeight, behavior: smooth ? 'smooth' : 'auto' })); }
-  function append(el) { tContent.appendChild(el); requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('in'))); scrollBottom(); return el; }
+  function scrollBottom(smooth = true) { const go = () => tScroll.scrollTo({ top: tScroll.scrollHeight, behavior: smooth ? 'smooth' : 'auto' }); requestAnimationFrame(go); setTimeout(go, 80); }
+  function append(el) { tContent.appendChild(el); const go = () => el.classList.add('in'); requestAnimationFrame(() => requestAnimationFrame(go)); setTimeout(go, 60); scrollBottom(); return el; }
   function el(html) { const t = document.createElement('div'); t.innerHTML = html.trim(); return t.firstElementChild; }
   function addUser(text, { resend } = {}) {
     const n = el(`<div class="user anim">${resend ? `<button class="resend" aria-label="Gửi lại">${ICONS.reload}</button>` : ''}<div class="ububble">${esc(text)}</div></div>`);
@@ -453,7 +453,7 @@
   let timers = [];
   const later = (fn, ms) => { const t = setTimeout(fn, ms); timers.push(t); return t; };
   const clearTimers = () => { timers.forEach(clearTimeout); timers = []; };
-  const nextFrame = fn => requestAnimationFrame(() => requestAnimationFrame(fn));
+  const nextFrame = fn => { let d = false; const go = () => { if (!d) { d = true; fn(); } }; requestAnimationFrame(() => requestAnimationFrame(go)); setTimeout(go, 60); };
   let currentCase = 'A', navOpen = false, coachStep = 0, skipCoach = false;
 
   function openingBlocks(caseId) {
