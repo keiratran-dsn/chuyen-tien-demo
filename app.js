@@ -247,11 +247,19 @@
   }
 
   // ================= LUỒNG GÕ DÃY SỐ =================
+  let composing = false, pendingSend = false, lastSent = { text: '', at: 0 };
   function send() {
+    if (composing) { pendingSend = true; input.blur(); return; }
     const text = input.value.trim();
     if (!text || coachStep) return;
-    input.value = ''; syncHasText();
+    lastSent = { text, at: Date.now() };
+    clearInput();
     run(() => handle(text));
+  }
+  // Xoá ô nhập chắc chắn, kể cả khi bộ gõ tiếng Việt (Telex/VNI) còn giữ chữ đang gõ
+  function clearInput() {
+    input.value = ''; syncHasText();
+    if (document.activeElement === input) { input.blur(); input.focus({ preventScroll: true }); }
   }
   async function handle(text) {
     if (st.edit) return handleEdit(text);
@@ -380,7 +388,7 @@
     input.placeholder = field === 'amount' ? 'Nhập số tiền mới' : 'Nhập nội dung mới';
     syncHasText(); updateInset();
     input.focus();
-    try { input.setSelectionRange(input.value.length, input.value.length); } catch (e) { /* noop */ }
+    setTimeout(() => { try { input.select(); } catch (e) { /* noop */ } }, 0);
   }
   function cancelEdit() {
     st.edit = null; dock.classList.remove('editing'); input.value = ''; syncHasText(); setPhase(st.phase); updateInset();
@@ -389,7 +397,7 @@
     if (st.edit === 'amount') {
       const v = parseAmount(text); addUser(v ? fmtMoney(v) : text);
       const err = amountError(v);
-      if (err) { input.value = text; syncHasText(); return botSay(err); }
+      if (err) return botSay(err);
       st.amount = v;
     } else {
       addUser(text); st.content = text;
@@ -649,7 +657,16 @@
 
     // composer
     input.addEventListener('focus', openKb);
-    input.addEventListener('input', syncHasText);
+    input.addEventListener('input', () => {
+      // Bộ gõ tiếng Việt đôi khi gõ lại phần chữ vừa gửi ngay sau khi ô đã được xoá → bỏ phần thừa đó
+      if (lastSent.text && Date.now() - lastSent.at < 400 && input.value.trim() && lastSent.text.endsWith(input.value.trim())) { input.value = ''; }
+      syncHasText();
+    });
+    input.addEventListener('compositionstart', () => { composing = true; });
+    input.addEventListener('compositionend', () => {
+      composing = false;
+      if (pendingSend) { pendingSend = false; setTimeout(() => { if (input.value.trim()) send(); }, 0); }
+    });
     chatbox.addEventListener('pointerdown', e => { if (e.target.closest('.send-btn')) return; if (!coachStep) setTimeout(() => input.focus(), 0); });
     $('#sendBtn').addEventListener('pointerdown', e => e.preventDefault());
     $('#sendBtn').addEventListener('click', send);
@@ -662,7 +679,12 @@
       onKey(k.dataset.key);
     });
     input.addEventListener('keydown', e => {
-      if (e.key === 'Enter') { e.preventDefault(); if (input.value.trim()) send(); else closeKb(); return; }
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        if (e.isComposing || composing || e.keyCode === 229) { pendingSend = true; return; }
+        if (input.value.trim()) send(); else closeKb();
+        return;
+      }
       if (e.key === 'Escape') { e.preventDefault(); if (st.edit) cancelEdit(); closeKb(); return; }
       const key = e.key === 'Backspace' ? 'back' : (e.key.length === 1 ? e.key.toLowerCase() : null);
       const btn = key && $(`.key[data-key="${CSS.escape(key)}"]`);
