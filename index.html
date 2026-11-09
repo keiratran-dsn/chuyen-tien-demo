@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Chuyển tiền — Demo 3 trạng thái người dùng</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="stage">
+  <!-- Bảng điều khiển demo -->
+  <aside class="panel" id="panel">
+    <div class="panel-head">
+      <div class="eyebrow">Viettel Money · Prototype</div>
+      <h1>Chuyển tiền</h1>
+      <p>Từ điểm chạm ở Home, bấm <b>Chuyển tiền</b> để vào màn chuyển tiền. Chọn trạng thái người dùng bên dưới.</p>
+    </div>
+    <div class="cases" role="radiogroup" aria-label="Trạng thái người dùng">
+      <button class="case" data-case="A" role="radio">
+        <span class="case-tag">A</span>
+        <span class="case-body"><b>Vào lần đầu</b><small>Hiển thị tooltip giới thiệu tính năng (2 bước)</small></span>
+      </button>
+      <button class="case" data-case="B" role="radio">
+        <span class="case-tag">B</span>
+        <span class="case-body"><b>Đã vào nhưng chưa chuyển cho ai</b><small>Hiển thị danh sách theo danh bạ · chạm ô chat để mở bàn phím</small></span>
+      </button>
+      <button class="case" data-case="C" role="radio">
+        <span class="case-tag">C</span>
+        <span class="case-body"><b>Đã từng chuyển</b><small>Hiển thị danh sách đã lưu và danh sách gần đây</small></span>
+      </button>
+    </div>
+    <div class="panel-actions">
+      <button class="btn-ghost" id="btnRestart">↺ Chạy lại từ Home</button>
+    </div>
+    <p class="panel-note">Mẹo: bấm vào ô “Nhập/dán thông tin chuyển tiền” để mở bàn phím. Có thể gõ bằng bàn phím máy tính.</p>
+  </aside>
+
+  <!-- Chọn case trên mobile -->
+  <button class="m-case" id="mCaseBtn" aria-label="Đổi trạng thái"><span id="mCaseLabel">A</span> ▾</button>
+
+  <!-- iPhone -->
+  <div class="device-wrap" id="deviceWrap">
+    <div class="device" id="device">
+      <div class="screen" id="screen">
+        <div class="island"></div>
+
+        <!-- ============ HOME ============ -->
+        <section class="view" id="home">
+          <div class="home-scroll" id="homeScroll">
+            <div class="hero">
+              <svg class="hero-art" viewBox="0 0 375 420" preserveAspectRatio="none" aria-hidden="true">
+                <defs>
+                  <linearGradient id="hzRibbon" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#E5394F" stop-opacity=".0"/>
+                    <stop offset=".35" stop-color="#E5394F" stop-opacity=".85"/>
+                    <stop offset="1" stop-color="#B8142C" stop-opacity=".9"/>
+                  </linearGradient>
+                  <linearGradient id="hzGold" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#FFF3DD"/>
+                    <stop offset="1" stop-color="#E6C08E"/>
+                  </linearGradient>
+                  <linearGradient id="hzLake" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#F7E2C9"/>
+                    <stop offset="1" stop-color="#FBF0E6" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <path d="M0 300 C40 280 70 286 100 276 C130 266 150 284 185 280 C220 276 250 262 290 270 C320 276 350 268 375 274 L375 330 L0 330 Z" fill="#E7C3A0" opacity=".45"/>
+                <path d="M0 312 C50 300 90 306 130 298 C170 290 210 304 250 298 C300 292 340 300 375 296 L375 330 L0 330 Z" fill="#DDB28C" opacity=".35"/>
+                <g fill="#C99B76" opacity=".55">
+                  <rect x="236" y="248" width="6" height="52" rx="1"/>
+                  <rect x="246" y="262" width="5" height="38" rx="1"/>
+                  <rect x="226" y="270" width="5" height="30" rx="1"/>
+                  <path d="M128 296 l14 -18 l14 18 z"/><rect x="134" y="282" width="16" height="16"/>
+                  <path d="M131 284 l11 -12 l11 12 z"/>
+                </g>
+                <rect x="0" y="318" width="375" height="90" fill="url(#hzLake)"/>
+                <path d="M300 -10 C340 60 330 160 290 230 C270 266 300 300 375 320 L375 -10 Z" fill="url(#hzGold)" opacity=".55"/>
+                <path d="M250 330 C300 290 340 230 375 200 L375 250 C345 275 310 310 270 340 Z" fill="url(#hzRibbon)"/>
+              </svg>
+            </div>
+
+            <header class="home-header">
+              <div class="profile">
+                <div class="avatar-wrap">
+                  <div class="avatar">B</div>
+                  <span class="priority">Priority</span>
+                </div>
+                <div class="greet">
+                  <span class="greet-hi">Chào Bắc</span>
+                  <span class="greet-total">Tổng tài sản <svg width="12" height="12" viewBox="0 0 16 16"><path d="M5.2 13.2a.5.5 0 0 1 0-.7L9.7 8 5.2 3.5a.5.5 0 0 1 .7-.7l4.9 4.8a.5.5 0 0 1 0 .7l-4.9 4.9a.5.5 0 0 1-.7 0Z" fill="#222"/></svg></span>
+                </div>
+              </div>
+              <div class="h-actions">
+                <button class="h-btn" aria-label="Tìm kiếm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="1.6" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button>
+                <button class="h-btn" aria-label="Thông báo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15Z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></svg><span class="badge">99+</span></button>
+              </div>
+            </header>
+
+            <div class="home-body">
+              <div class="promo">
+                <span>Gửi tiết kiệm MBV lãi suất 6.3% →</span>
+                <span class="promo-rate">6.3<small>%</small></span>
+                <span class="promo-up"><svg width="12" height="12" viewBox="0 0 16 16"><path d="M3 10.5 8 5.5l5 5" stroke="#222" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </div>
+              <div class="card services">
+                <div class="svc-head">
+                  <div class="tabs">
+                    <span class="tab is-on">✦ Đề xuất</span>
+                    <span class="tab">Yêu thích</span>
+                  </div>
+                  <span class="svc-all">Tất cả dịch vụ <svg width="12" height="12" viewBox="0 0 16 16"><path d="M5.2 13.2a.5.5 0 0 1 0-.7L9.7 8 5.2 3.5a.5.5 0 0 1 .7-.7l4.9 4.8a.5.5 0 0 1 0 .7l-4.9 4.9a.5.5 0 0 1-.7 0Z" fill="#555"/></svg></span>
+                </div>
+                <div class="svc-row">
+                  <div class="svc"><span class="svc-ic"><svg viewBox="0 0 28 28" fill="none" stroke="#222" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4.5a7 7 0 0 0-4 12.7V20h8v-2.8a7 7 0 0 0-4-12.7Z"/><path d="M11 23h6"/><path d="m14.8 8.5-2.3 4h3l-2.3 4"/></svg><i></i></span>Tiền điện</div>
+                  <div class="svc"><span class="svc-ic"><svg viewBox="0 0 28 28" fill="none" stroke="#222" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4s-7 7.6-7 12.6a7 7 0 0 0 14 0C21 11.6 14 4 14 4Z"/><path d="M11 17.5a3 3 0 0 0 3 3"/></svg><i></i></span>Tiền nước</div>
+                  <div class="svc"><span class="svc-ic"><svg viewBox="0 0 28 28" fill="none" stroke="#222" stroke-width="1.4" stroke-linecap="round"><path d="M4 11.5a14.5 14.5 0 0 1 20 0"/><path d="M7.5 15a9.5 9.5 0 0 1 13 0"/><path d="M11 18.5a4.5 4.5 0 0 1 6 0"/><circle cx="14" cy="22" r="1" fill="#222"/></svg><i></i></span>Internet</div>
+                  <div class="svc"><span class="svc-ic"><svg viewBox="0 0 28 28" fill="none" stroke="#222" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h14v20l-2.5-1.6L16 24l-2-1.6L12 24l-2.5-1.6L7 24Z"/><path d="M10.5 9h7M10.5 13h7M10.5 17h4"/></svg><i></i></span>Hoá đơn khác</div>
+                </div>
+                <div class="dots"><i class="on"></i><i></i><i></i></div>
+              </div>
+
+              <div class="sec-title">Tài chính thông minh <span class="sec-arrow"><svg width="12" height="12" viewBox="0 0 16 16"><path d="M5.2 13.2a.5.5 0 0 1 0-.7L9.7 8 5.2 3.5a.5.5 0 0 1 .7-.7l4.9 4.8a.5.5 0 0 1 0 .7l-4.9 4.9a.5.5 0 0 1-.7 0Z" fill="#222"/></svg></span></div>
+              <div class="ai-row">
+                <div class="ai-card ai-week">
+                  <div class="ai-head"><span class="ai-ic g">≡</span>Tổng kết tuần<span class="ai-go">›</span></div>
+                  <div class="ai-title">Chi tiêu ↘ 25% so với cùng kỳ</div>
+                  <svg class="ai-chart" viewBox="0 0 168 90" preserveAspectRatio="none"><defs><linearGradient id="wv" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3FD7C4" stop-opacity=".35"/><stop offset="1" stop-color="#3FD7C4" stop-opacity="0"/></linearGradient></defs><path d="M0 20 C14 30 18 70 30 66 C44 62 44 22 58 24 C72 26 70 64 90 62 C112 60 120 50 140 46 C156 44 162 54 168 56 L168 90 L0 90Z" fill="url(#wv)"/><path d="M0 20 C14 30 18 70 30 66 C44 62 44 22 58 24 C72 26 70 64 90 62 C112 60 120 50 140 46 C156 44 162 54 168 56" fill="none" stroke="#1CC3AE" stroke-width="2"/></svg>
+                </div>
+                <div class="ai-card ai-save">
+                  <div class="ai-head"><span class="ai-ic o">◔</span>Gửi tiết kiệm<span class="ai-go">›</span></div>
+                  <div class="ai-text">Bật <b>Tự động sinh lời</b>, tiền tăng thông minh</div>
+                  <div class="ai-cta">Bật ngay →</div>
+                </div>
+              </div>
+
+              <div class="card bills">
+                <div class="bills-title">Hoá đơn</div>
+                <div class="bills-auto"><span>Bật thanh toán tự động</span><b>Bật</b></div>
+                <div class="svc-row small">
+                  <div class="svc"><span class="svc-ic sm">⚡︎</span>Tiền điện</div>
+                  <div class="svc"><span class="svc-ic sm">💧︎</span>Tiền nước</div>
+                  <div class="svc"><span class="svc-ic sm">📶︎</span>Internet</div>
+                  <div class="svc"><span class="svc-ic sm">🧾︎</span>Hoá đơn khác</div>
+                </div>
+              </div>
+              <div class="card deals">
+                <div class="bills-title">Ưu đãi cho bạn</div>
+                <div class="deal-row"><div class="deal d1"></div><div class="deal d2"></div><div class="deal d3"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab bar nổi -->
+          <nav class="tabbar">
+            <div class="tabbar-pill">
+              <button class="tb" id="tabTransfer"><span class="tb-ic" data-icon="t1"></span><span>Chuyển tiền</span><span class="tb-hint"></span></button>
+              <button class="tb"><span class="tb-ic" data-icon="t2"></span><span>Quét QR</span></button>
+              <button class="tb"><span class="tb-ic" data-icon="t3"></span><span>Nạp tiền</span></button>
+              <button class="tb"><span class="tb-ic" data-icon="t4"></span><span>Lịch sử</span></button>
+            </div>
+          </nav>
+          <div class="status" data-icon="status"></div>
+          <div class="dim"></div>
+        </section>
+
+        <!-- ============ CHUYỂN TIỀN ============ -->
+        <section class="view" id="transfer" aria-hidden="true">
+          <div class="t-bg"></div>
+          <div class="t-scroll" id="tScroll">
+            <div class="t-content" id="tContent"></div>
+          </div>
+
+          <div class="t-dock" id="tDock">
+            <div class="chips" id="chips">
+              <button class="chip"><span data-icon="copy"></span>Dán</button>
+              <button class="chip"><span data-icon="album"></span>Tải ảnh</button>
+              <button class="chip"><span data-icon="camera"></span>Chụp ảnh</button>
+            </div>
+            <label class="chatbox" id="chatbox">
+              <input id="chatInput" type="text" inputmode="none" autocomplete="off" spellcheck="false" placeholder="Nhập/dán thông tin chuyển tiền" />
+            </label>
+          </div>
+
+          <header class="t-nav">
+            <div class="status" data-icon="status"></div>
+            <div class="t-nav-row">
+              <button class="icon-btn" id="btnBack" aria-label="Quay lại"><span data-icon="back"></span></button>
+              <div class="t-title">Chuyển tiền</div>
+              <button class="icon-btn" id="btnScan" aria-label="Quét mã QR"><span data-icon="scan"></span></button>
+            </div>
+          </header>
+
+          <!-- Bàn phím iOS -->
+          <div class="kb" id="kb" aria-hidden="true">
+            <div class="kb-sugg"><span>“The”</span><i></i><span>the</span><i></i><span>to</span></div>
+            <div class="kb-rows" id="kbRows"></div>
+            <div class="kb-bottom">
+              <svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="#222" stroke-width="1.5"><circle cx="13" cy="13" r="10"/><circle cx="9.5" cy="11" r="1" fill="#222"/><circle cx="16.5" cy="11" r="1" fill="#222"/><path d="M8.5 15.5a5 5 0 0 0 9 0" stroke-linecap="round"/></svg>
+              <svg width="20" height="26" viewBox="0 0 20 26" fill="none" stroke="#222" stroke-width="1.5" stroke-linecap="round"><rect x="6" y="2" width="8" height="14" rx="4"/><path d="M2.5 12a7.5 7.5 0 0 0 15 0M10 19.5V24"/></svg>
+            </div>
+          </div>
+
+          <!-- Coachmark (case A) -->
+          <div class="coach" id="coach">
+            <div class="spot" id="spot"></div>
+            <div class="tip" id="tip1" style="left:24px;top:481px;width:280px">
+              <div class="tip-title">Nhập theo cách bạn thích</div>
+              <div class="tip-text">Gõ số tài khoản hay số điện thoại, dán tin nhắn người ta gửi, hoặc chụp ảnh đều được.</div>
+              <div class="tip-foot"><span class="steps"><i class="on"></i><i></i></span><button class="tip-btn" id="tipNext">Tiếp</button></div>
+              <svg class="tip-arrow down" style="left:36px" width="18" height="10" viewBox="0 0 18 10"><path d="M0 0H18L9 10Z" fill="#fff"/></svg>
+            </div>
+            <div class="tip" id="tip2" style="left:85px;top:102px;width:280px">
+              <div class="tip-title">Hoặc quét mã QR</div>
+              <div class="tip-text">Quét mã của người nhận hay mã tại quầy, không cần nhập số.</div>
+              <div class="tip-foot"><span class="steps"><i></i><i class="on"></i></span><button class="tip-btn" id="tipDone">Đã hiểu</button></div>
+              <svg class="tip-arrow up" style="left:250px" width="18" height="10" viewBox="0 0 18 10"><path d="M9 0L18 10H0Z" fill="#fff"/></svg>
+            </div>
+          </div>
+        </section>
+
+        <div class="home-ind"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Sheet chọn case trên mobile -->
+<div class="m-sheet" id="mSheet">
+  <div class="m-sheet-card">
+    <div class="m-sheet-title">Trạng thái người dùng</div>
+    <button class="case" data-case="A"><span class="case-tag">A</span><span class="case-body"><b>Vào lần đầu</b><small>Tooltip giới thiệu tính năng</small></span></button>
+    <button class="case" data-case="B"><span class="case-tag">B</span><span class="case-body"><b>Chưa chuyển cho ai</b><small>Danh sách theo danh bạ</small></span></button>
+    <button class="case" data-case="C"><span class="case-tag">C</span><span class="case-body"><b>Đã từng chuyển</b><small>Đã lưu + gần đây</small></span></button>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
