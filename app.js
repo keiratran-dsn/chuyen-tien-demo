@@ -384,9 +384,11 @@
     const w = guard();
     setPhase('busy');
     const t = addTyping(); await w(650); t.remove();
+    closeKb();
     addBlock(confirmBlock());
     setPhase('confirm');
     setChips('edit');
+    setTimeout(() => scrollBottom(), 420);
   }
 
   // ---------- sửa thông tin ----------
