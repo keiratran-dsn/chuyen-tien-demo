@@ -20,145 +20,499 @@
     shiftOn: `<svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 3.5 3 11.5h4.5V18h7v-6.5H19L11 3.5Z" fill="#111" stroke="#111" stroke-width="1.5" stroke-linejoin="round"/></svg>`,
     bksp: `<svg width="24" height="22" viewBox="0 0 24 22" fill="none" stroke="#111" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M8 4h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H8l-6-7 6-7Z"/><path d="m11 8 6 6M17 8l-6 6"/></svg>`,
     ret: `<svg width="22" height="18" viewBox="0 0 22 18" fill="none" stroke="#111" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 3v6a2 2 0 0 1-2 2H4"/><path d="m8 7-4 4 4 4"/></svg>`,
+    send: `<svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M21.0816 9.92831L11.0949 4.93497C4.38661 1.57497 1.63327 4.32831 4.99327 11.0366L6.00827 13.0666C6.29994 13.6616 6.29994 14.35 6.00827 14.945L4.99327 16.9633C1.63327 23.6716 4.37494 26.425 11.0949 23.065L21.0816 18.0716C25.5616 15.8316 25.5616 12.1683 21.0816 9.92831ZM17.3133 14.875H11.0133C10.5349 14.875 10.1383 14.4783 10.1383 14C10.1383 13.5216 10.5349 13.125 11.0133 13.125H17.3133C17.7916 13.125 18.1883 13.5216 18.1883 14C18.1883 14.4783 17.7916 14.875 17.3133 14.875Z" fill="url(#gsend)"/><defs><linearGradient id="gsend" x1="14" y1="3.5" x2="14" y2="24.5" gradientUnits="userSpaceOnUse"><stop stop-color="#F1335C"/><stop offset="1" stop-color="#F899AD"/></linearGradient></defs></svg>`,
+    reload: `<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.22066 10.1817C4.0172 10.3378 3.73325 10.3339 3.53412 10.1724L1.87161 8.82359C1.63389 8.63073 1.59753 8.28168 1.79039 8.04397C1.98325 7.80625 2.3323 7.76989 2.57002 7.96275L3.89295 9.03604L5.30442 7.95338C5.5473 7.76708 5.89523 7.81295 6.08154 8.05583C6.26785 8.29872 6.22198 8.64665 5.97909 8.83295L4.22066 10.1817Z" fill="#222"/><path fill-rule="evenodd" clip-rule="evenodd" d="M3.8322 9.38115C3.52846 9.34313 3.31306 9.06608 3.35108 8.76234C3.47666 7.75904 3.99058 6.37035 5.04944 5.22447C6.12325 4.06241 7.74639 3.16398 10.0366 3.16398C14.3837 3.16398 16.3551 6.68011 16.715 8.42716C16.7768 8.72697 16.5839 9.0201 16.284 9.08187C15.9842 9.14364 15.6911 8.95067 15.6293 8.65086C15.3316 7.20572 13.6669 4.2725 10.0366 4.2725C8.069 4.2725 6.73686 5.03175 5.86359 5.97678C4.97538 6.93799 4.55044 8.10577 4.45102 8.90002C4.413 9.20376 4.13594 9.41917 3.8322 9.38115Z" fill="#222"/><path fill-rule="evenodd" clip-rule="evenodd" d="M15.7791 9.85221C15.9826 9.69615 16.2665 9.70002 16.4656 9.86157L18.1281 11.2104C18.3659 11.4032 18.4022 11.7523 18.2094 11.99C18.0165 12.2277 17.6675 12.2641 17.4297 12.0712L16.1068 10.9979L14.6953 12.0806C14.4525 12.2669 14.1045 12.221 13.9182 11.9781C13.7319 11.7352 13.7778 11.3873 14.0207 11.201L15.7791 9.85221Z" fill="#222"/><path fill-rule="evenodd" clip-rule="evenodd" d="M16.1678 10.6528C16.4715 10.6908 16.6869 10.9679 16.6489 11.2716C16.4006 13.2558 14.5103 16.8359 9.89034 16.8359C5.53912 16.8359 3.64382 13.3485 3.28495 11.6068C3.22318 11.307 3.41615 11.0138 3.71596 10.9521C4.01577 10.8903 4.3089 11.0833 4.37067 11.3831C4.66952 12.8335 6.26415 15.7274 9.89034 15.7274C13.786 15.7274 15.3473 12.7448 15.549 11.1339C15.587 10.8302 15.8641 10.6148 16.1678 10.6528Z" fill="#222"/></svg>`,
+    edit: `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#222" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"><path d="M8 14.08h5.48"/><path d="M9.89 2.3a1.15 1.15 0 0 1 1.58-.16l1.32 1.04c.52.32.68.98.37 1.5L6.03 13.8a.77.77 0 0 1-.56.28l-2.3.03-.52-2.22a.7.7 0 0 1 .13-.6L9.89 2.3Z"/><path d="m8.6 4.13 3.16 2.44"/></svg>`,
+    close: `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#222" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6.17"/><path d="M9.6 6.4 6.4 9.6M9.6 9.6 6.4 6.4"/></svg>`,
+    search: `<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M9.07 3.06a5.81 5.81 0 1 0 0 11.62 5.81 5.81 0 0 0 0-11.62ZM1.87 8.87a7.2 7.2 0 1 1 14.4 0 7.2 7.2 0 0 1-14.4 0Z" fill="#222"/><path fill-rule="evenodd" clip-rule="evenodd" d="M13.29 13.49a.7.7 0 0 1 .99 0l3.65 3.65a.7.7 0 1 1-.99.99l-3.65-3.65a.7.7 0 0 1 0-.99Z" fill="#222"/></svg>`,
+    closeLine: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6.75 17.13 12 11.88l5.25 5.25"/><path d="M17.25 6.88 12 12.13 6.75 6.88"/></svg>`,
+    sep: `<svg width="12" height="16" viewBox="0 0 12 16" fill="none"><g opacity=".5"><path d="M3 3.75 6 6.25 9 3.75" stroke="#7A7A7A" stroke-width="2" stroke-linecap="round"/></g><g opacity=".5"><path d="M3 9.75 6 12.25 9 9.75" stroke="#7A7A7A" stroke-width="2" stroke-linecap="round"/></g></svg>`,
   };
 
-  // ---------- Dữ liệu 3 case ----------
+  // ================= DỮ LIỆU =================
+  const BANKS = {
+    vtm: { name: 'Viettel Money', full: 'Ví điện tử Viettel Money', logo: 'assets/vtm.svg', alias: ['viettel', 'viettelpay', 'vtm', 'viettel money'] },
+    mb: { name: 'MBBank', full: 'Ngân hàng TMCP Quân đội', logo: 'assets/mb.png', alias: ['mb', 'mbbank', 'quan doi'] },
+    vietinbank: { name: 'VietinBank', full: 'Ngân hàng TMCP Công Thương Việt Nam', logo: 'assets/vietinbank.png', alias: ['vietin', 'vietinbank', 'ctg', 'cong thuong'] },
+    sacombank: { name: 'Sacombank', full: 'Ngân hàng TMCP Sài Gòn Thương Tín', logo: 'assets/sacombank.png', alias: ['sacom', 'sacombank', 'stb'] },
+    bidv: { name: 'BIDV', full: 'Ngân hàng TMCP Đầu tư và Phát triển Việt Nam', logo: 'assets/bidv.png', alias: ['bidv', 'dau tu'] },
+    techcombank: { name: 'Techcombank', full: 'Ngân hàng TMCP Kỹ Thương Việt Nam', logo: 'assets/techcombank.png', alias: ['tcb', 'techcom', 'techcombank', 'ky thuong'] },
+    vcb: { name: 'Vietcombank', full: 'Ngân hàng TMCP Ngoại Thương Việt Nam', logo: 'assets/vcb.png', alias: ['vcb', 'vietcom', 'vietcombank', 'ngoai thuong'] },
+    vpbank: { name: 'VPBank', full: 'Ngân hàng TMCP Việt Nam Thịnh Vượng', logo: 'assets/vpbank.png', alias: ['vpb', 'vpbank', 'vp bank'] },
+  };
+  const PICKER = ['mb', 'vietinbank', 'sacombank', 'bidv', 'techcombank', 'vcb', 'vpbank'];
+  const SOURCES = [
+    { id: 'vtp', name: 'ViettelPay', desc: 'Số dư 5.000.000đ', balance: 5000000, logo: 'assets/vtm.svg' },
+    { id: 'mbl', name: 'MB Bank ·· 6789', desc: 'Tài khoản liên kết · Số dư 25.000.000đ', balance: 25000000, logo: 'assets/mb.png' },
+  ];
+  // Lịch sử giao dịch (theo dãy số)
+  const HISTORY = {
+    '0912345678': [
+      { name: 'NGUYEN VAN A', bank: 'vtm', acct: '0912345678', kind: 'phone' },
+      { name: 'NGUYEN VAN A', bank: 'vpbank', acct: '0912345678', kind: 'acct' },
+    ],
+    '0071000312345': [
+      { name: 'NGUYEN THI LINH', bank: 'vcb', acct: '0071000312345', kind: 'acct' },
+      { name: 'NGUYEN THI LINH', bank: 'bidv', acct: '0071000312345', kind: 'acct' },
+    ],
+  };
+  const BIN = { '970436': 'vcb', '970407': 'techcombank', '970418': 'bidv', '970422': 'mb', '970415': 'vietinbank', '970403': 'sacombank', '970432': 'vpbank' };
+  const NOT_EXIST = { acct: '21510000123457', bank: 'bidv' };
+  const SLOW_NO = '21510000123456';
+  const FAKE_NAMES = ['LE THI HOA', 'TRAN THI MAI', 'PHAM VAN NAM', 'DO THU HA', 'HOANG MINH TUAN', 'VU THI LAN', 'NGO DUC ANH'];
+  const SENDER = 'BAC';
+
   const CONTACTS = [
-    { name: 'Mẹ', desc: '0912 345 xxx · ViettelPay', bank: 'vtm' },
-    { name: 'TRAN VAN TUAN', desc: '0987 654 xxx · Tiền di động', bank: 'vtm' },
-    { name: 'Hằng cùng phòng', desc: '0905 111 xxx · ViettelPay', bank: 'vtm' },
+    { label: 'Mẹ', name: 'NGUYEN THI HUONG', desc: '0912 345 xxx · ViettelPay', bank: 'vtm', acct: '0912345111', kind: 'phone' },
+    { label: 'TRAN VAN TUAN', name: 'TRAN VAN TUAN', desc: '0987 654 xxx · Tiền di động', bank: 'vtm', acct: '0987654222', kind: 'phone' },
+    { label: 'Hằng cùng phòng', name: 'LE THU HANG', desc: '0905 111 xxx · ViettelPay', bank: 'vtm', acct: '0905111333', kind: 'phone' },
   ];
   const SAVED = [
-    { name: 'CHU GIA LONG', bank: 'vtm' },
-    { name: 'VŨ THỊ HỒNG P…', bank: 'vcb' },
-    { name: 'TRAN LE HAI VY', bank: 'vtm' },
-    { name: 'MẦU VĂN ĐỨC', bank: 'bidv' },
-    { name: 'TRAN THI K…', bank: 'mb' },
+    { label: 'CHU GIA LONG', name: 'CHU GIA LONG', bank: 'vtm', acct: '0936222444', kind: 'phone' },
+    { label: 'VŨ THỊ HỒNG P…', name: 'VU THI HONG PHUONG', bank: 'vcb', acct: '0451000123456', kind: 'acct' },
+    { label: 'TRAN LE HAI VY', name: 'TRAN LE HAI VY', bank: 'vtm', acct: '0977888999', kind: 'phone' },
+    { label: 'MẦU VĂN ĐỨC', name: 'MAU VAN DUC', bank: 'bidv', acct: '21510000654321', kind: 'acct' },
+    { label: 'TRAN THI K…', name: 'TRAN THI KIM', bank: 'mb', acct: '0868123456789', kind: 'acct' },
   ];
   const RECENT = [
-    { name: 'NGUYEN THI LINH', desc: 'Vietcombank · 0071 0003 xxxx', bank: 'vcb' },
-    { name: 'TRAN VAN TUAN', desc: 'ViettelPay · 0912 345 xxx', bank: 'vtm' },
+    { name: 'NGUYEN THI LINH', bank: 'vcb', acct: '0071000312345', kind: 'acct', desc: 'Vietcombank · 0071 0003 xxxx', last: { amount: 500000, content: 'BAC chuyen tien an trua' } },
+    { name: 'TRAN VAN TUAN', bank: 'vtm', acct: '0912345678', kind: 'phone', desc: 'ViettelPay · 0912 345 xxx', last: { amount: 200000, content: 'BAC chuyen tien' } },
+  ];
+  const TRIES = [
+    ['0912 345 678', 'SĐT có trong lịch sử'],
+    ['0987 654 321', 'SĐT chưa có giao dịch'],
+    ['0071000312345', 'STK có trong lịch sử'],
+    ['19036688202401', 'STK chưa có giao dịch'],
+    ['9704 3661 2345 6789', 'Số thẻ khớp BIN'],
+    ['21510000123457', 'Chọn BIDV → TK không tồn tại'],
+    ['12345', 'Không ra kết quả'],
+    ['21510000123456', 'Tra cứu quá lâu → gửi lại'],
   ];
 
+  // ================= TIỆN ÍCH =================
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
-  const screen = $('#screen');
-  const tContent = $('#tContent');
-  const dock = $('#tDock');
-  const chips = $$('.chip', dock);
-  const chatbox = $('#chatbox');
-  const input = $('#chatInput');
-  const coach = $('#coach');
-  const spot = $('#spot');
-  const tip1 = $('#tip1');
-  const tip2 = $('#tip2');
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  const CANCEL = Symbol('cancel');
+  const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase().trim();
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const fmtMoney = n => Math.round(n).toLocaleString('vi-VN').replace(/,/g, '.') + 'đ';
+  const fmtPhone = d => d.length === 10 ? `${d.slice(0, 4)} ${d.slice(4, 7)} ${d.slice(7)}` : d;
+  const fmtPhoneDash = d => d.length === 10 ? `${d.slice(0, 4)}-${d.slice(4, 7)}-${d.slice(7)}` : d;
+  const maskCard = d => `${d.slice(0, 4)} ${d.slice(4, 6)}** **** ${d.slice(-4)}`;
+  const acctDisp = r => r.kind === 'card' ? maskCard(r.acct) : (r.bank === 'vtm' ? fmtPhoneDash(r.acct) : r.acct);
+  const recDesc = r => `${BANKS[r.bank].name} · ${acctDisp(r)}`;
+  const isPhone = d => /^(0[35789]\d{8}|84[35789]\d{8})$/.test(d);
+  const normPhone = d => d.startsWith('84') && d.length === 11 ? '0' + d.slice(2) : d;
+  const isCard = d => /^9704\d{12,15}$/.test(d);
+  const fakeName = seed => { let h = 0; for (const c of seed) h = (h * 31 + c.charCodeAt(0)) >>> 0; return FAKE_NAMES[h % FAKE_NAMES.length]; };
+  const fmtTyped = raw => { const d = raw.replace(/[\s.\-]/g, ''); if (/^\d+$/.test(d)) { if (isCard(d)) return d.replace(/(\d{4})(?=\d)/g, '$1 '); if (isPhone(d)) return fmtPhone(normPhone(d)); } return raw.trim(); };
 
-  const bankImg = (b, lg) => `<img class="bank${lg ? ' lg' : ''}" src="assets/${b}.${b === 'vtm' ? 'svg' : 'png'}" alt="" draggable="false">`;
-  const linkAll = `<span class="link">Xem tất cả ${ICONS.arrow}</span>`;
-  const rowHTML = (c, right) => `<div class="row fade-row">${bankImg(c.bank)}<div class="row-text"><div class="row-name">${c.name}</div><div class="row-desc">${c.desc}</div></div>${right}</div>`;
-  const joinRows = (rows) => rows.join('<div class="divider fade-row"></div>');
-
-  function cardsFor(caseId) {
-    if (caseId === 'C') {
-      const saved = `<div class="bot anim"><div class="glass list">
-          <div class="list-head fade-row"><h3>Danh sách đã lưu</h3>${linkAll}</div>
-          <div class="carousel">${SAVED.map(s => `<div class="contact fade-row">${bankImg(s.bank, true)}<span>${s.name}</span></div>`).join('')}</div>
-        </div></div>`;
-      const recent = `<div class="bot anim"><div class="glass list">
-          <div class="list-head fade-row"><h3>Gần đây</h3></div>
-          ${joinRows(RECENT.map(c => rowHTML(c, '<span class="row-act">Chuyển lại</span>')))}
-        </div></div>`;
-      return [saved, recent];
-    }
-    const sub = caseId === 'A' ? '<div class="list-sub fade-row">Những người này đang dùng Viettel Money</div>' : '';
-    return [`<div class="bot anim"><div class="glass list">
-        <div class="list-head fade-row"><h3>Danh bạ của bạn</h3>${linkAll}</div>${sub}
-        ${joinRows(CONTACTS.map(c => rowHTML(c, ICONS.arrow)))}
-      </div></div>`];
+  const DIG = ['không', 'một', 'hai', 'ba', 'bốn', 'năm', 'sáu', 'bảy', 'tám', 'chín'];
+  function read3(n, full) {
+    const h = Math.floor(n / 100), t = Math.floor(n % 100 / 10), u = n % 10, s = [];
+    if (full || h) s.push(DIG[h] + ' trăm');
+    if (t > 1) { s.push(DIG[t] + ' mươi'); if (u === 1) s.push('mốt'); else if (u === 4) s.push('tư'); else if (u === 5) s.push('lăm'); else if (u) s.push(DIG[u]); }
+    else if (t === 1) { s.push('mười'); if (u === 5) s.push('lăm'); else if (u) s.push(DIG[u]); }
+    else if (u) { if (full || h) s.push('lẻ'); s.push(DIG[u]); }
+    return s.join(' ');
+  }
+  function vnWords(n) {
+    const units = ['', 'nghìn', 'triệu', 'tỷ'], g = [];
+    while (n > 0) { g.push(n % 1000); n = Math.floor(n / 1000); }
+    const parts = [];
+    for (let i = g.length - 1; i >= 0; i--) { if (!g[i]) continue; parts.push(read3(g[i], i < g.length - 1) + (units[i] ? ' ' + units[i] : '')); }
+    const s = parts.join(' ');
+    return s.charAt(0).toUpperCase() + s.slice(1) + ' đồng';
+  }
+  function parseAmount(raw) {
+    const s = norm(raw).replace(/d$|dong$|vnd$/, '').trim();
+    const m = s.match(/^([\d.,\s]+)\s*(k|nghin|ngan|tr|trieu|m|cu)?$/);
+    if (!m) return null;
+    const unit = m[2], num = m[1].replace(/\s/g, '');
+    let v;
+    if (unit) { v = parseFloat(num.replace(',', '.')); if (/^(k|nghin|ngan)$/.test(unit)) v *= 1e3; else v *= 1e6; }
+    else v = parseInt(num.replace(/[.,]/g, ''), 10);
+    return Number.isFinite(v) && v > 0 ? Math.round(v) : null;
   }
 
-  // ---------- Hẹn giờ có thể huỷ ----------
+  // ================= DOM =================
+  const screen = $('#screen');
+  const tScroll = $('#tScroll');
+  const tContent = $('#tContent');
+  const dock = $('#tDock');
+  const chipsEl = $('#chips');
+  const chatbox = $('#chatbox');
+  const input = $('#chatInput');
+  const coach = $('#coach'), spot = $('#spot'), tip1 = $('#tip1'), tip2 = $('#tip2');
+  const toastEl = $('#toast');
+  const logo = (b, cls = 'bank') => `<img class="${cls}" src="${BANKS[b].logo}" alt="" draggable="false">`;
+
+  let toastT;
+  function toast(msg) { toastEl.textContent = msg; toastEl.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => toastEl.classList.remove('show'), 2200); }
+
+  // ================= TRẠNG THÁI HỘI THOẠI =================
+  const PH = { idle: 'Nhập/dán thông tin chuyển tiền', askBank: 'Nhập tên ngân hàng', askAmount: 'Nhập số tiền', confirm: 'Nhập/dán thông tin chuyển tiền', busy: 'Nhập/dán thông tin chuyển tiền' };
+  const st = { gen: 0, phase: 'idle', lookup: null, rec: null, src: SOURCES[0], amount: null, content: null, edit: null, slowUsed: false };
+  function setPhase(p) { st.phase = p; if (!st.edit) input.placeholder = PH[p] || PH.idle; }
+  const guard = () => { const g = st.gen; return async ms => { await sleep(ms); if (g !== st.gen) throw CANCEL; }; };
+  const run = fn => fn().catch(e => { if (e !== CANCEL) console.error(e); });
+
+  // ---------- render helpers ----------
+  function scrollBottom(smooth = true) { requestAnimationFrame(() => tScroll.scrollTo({ top: tScroll.scrollHeight, behavior: smooth ? 'smooth' : 'auto' })); }
+  function append(el) { tContent.appendChild(el); requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('in'))); scrollBottom(); return el; }
+  function el(html) { const t = document.createElement('div'); t.innerHTML = html.trim(); return t.firstElementChild; }
+  function addUser(text, { resend } = {}) {
+    const n = el(`<div class="user anim">${resend ? `<button class="resend" aria-label="Gửi lại">${ICONS.reload}</button>` : ''}<div class="ububble">${esc(text)}</div></div>`);
+    return append(n);
+  }
+  function addTyping() { return append(el('<div class="bot anim"><div class="glass bubble-box"><div class="typing"><i></i><i></i><i></i></div></div></div>')); }
+  function toText(wrap, text) {
+    const box = wrap.firstElementChild;
+    const w0 = box.offsetWidth, h0 = box.offsetHeight;
+    box.innerHTML = `<div class="bubble">${esc(text)}</div>`;
+    box.style.width = 'auto'; box.style.height = 'auto';
+    const w1 = box.offsetWidth, h1 = box.offsetHeight;
+    box.style.width = w0 + 'px'; box.style.height = h0 + 'px'; box.firstElementChild.style.opacity = '0';
+    box.offsetWidth;
+    box.style.transition = 'width .36s cubic-bezier(.32,.72,0,1), height .36s cubic-bezier(.32,.72,0,1)';
+    box.style.width = w1 + 'px'; box.style.height = h1 + 'px';
+    box.firstElementChild.style.transition = 'opacity .3s ease .1s'; box.firstElementChild.style.opacity = '1';
+    setTimeout(() => { box.style.width = ''; box.style.height = ''; box.style.transition = ''; scrollBottom(); }, 400);
+  }
+  async function botSay(text, delay = 650) { const w = guard(); const t = addTyping(); await w(delay); toText(t, text); await w(380); return t; }
+  function hideBlocks() {
+    for (const b of $$('.block:not(.leaving)', tContent)) {
+      b.style.height = b.offsetHeight + 'px'; b.offsetHeight; b.classList.add('leaving'); b.style.height = '0px';
+      setTimeout(() => b.remove(), 340);
+    }
+  }
+  function addBlock(node) { hideBlocks(); node.classList.add('block', 'anim'); append(node); $$('.fade-row', node).forEach((r, i) => setTimeout(() => r.classList.add('in'), 140 + i * 50)); return node; }
+
+  // ---------- block builders ----------
+  const chev = ICONS.arrow;
+  function recRow(r, extra = '') { return `<div class="row fade-row" ${extra}>${logo(r.bank)}<div class="row-text"><div class="row-name">${esc(r.name)}</div><div class="row-desc">${esc(r.listDesc || recDesc(r))}</div></div>${chev}</div>`; }
+  function listBlock(results, withChoose) {
+    const n = el(`<div class="bot"><div class="glass list">${results.map((r, i) => (i ? '<div class="divider fade-row"></div>' : '') + recRow({ ...r, listDesc: r.bank === 'vtm' ? `${fmtPhoneDash(r.acct)} · Viettel Money` : `${r.acct} · ${BANKS[r.bank].name}` }, `data-i="${i}"`)).join('')}
+      ${withChoose ? `${results.length ? '<div class="divider fade-row"></div>' : ''}<div class="choose-row fade-row" data-choose>Chọn ngân hàng ${chev}</div>` : ''}</div></div>`);
+    $$('.row[data-i]', n).forEach(row => row.addEventListener('click', () => { const r = results[+row.dataset.i]; pickRecipient(r, `${r.name} · ${BANKS[r.bank].name}`); }));
+    const ch = $('[data-choose]', n); if (ch) ch.addEventListener('click', openBankSheet);
+    return n;
+  }
+  function infoBlock() {
+    const r = st.rec, s = st.src;
+    const n = el(`<div class="bot"><div class="glass list">
+      <div class="list-head fade-row"><h3>Thông tin chuyển tiền</h3></div>
+      <div class="row fade-row" data-src><img class="bank" src="${s.logo}" alt=""><div class="row-text"><div class="row-name">${esc(s.name)}</div><div class="row-desc">${esc(s.desc)}</div></div>${chev}</div>
+      <div class="sepline fade-row">${ICONS.sep}<i></i></div>
+      <div class="row fade-row" data-rec>${logo(r.bank)}<div class="row-text"><div class="row-name">${esc(r.name)}</div><div class="row-desc">${esc(recDesc(r))}</div></div>${chev}</div>
+    </div></div>`);
+    $('[data-src]', n).addEventListener('click', openSrcSheet);
+    $('[data-rec]', n).addEventListener('click', () => toast('Muốn đổi người nhận, bạn nhập lại SĐT / số tài khoản / số thẻ ở ô chat.'));
+    return n;
+  }
+  function confirmBlock() {
+    const r = st.rec, s = st.src;
+    const n = el(`<div class="bot"><div class="glass list">
+      <div class="cf-title fade-row">Bạn vui lòng xác nhận thông tin chuyển tiền.</div>
+      <div class="cf-group fade-row"><div class="cf-label">Số tiền chuyển</div><div class="cf-amount">${fmtMoney(st.amount)}</div><div class="cf-label">${esc(vnWords(st.amount))} · Miễn phí giao dịch</div></div>
+      <div class="divider fade-row"></div>
+      <div class="row static-row fade-row"><img class="bank" src="${s.logo}" alt=""><div class="row-text"><div class="row-name">${esc(s.name)}</div><div class="row-desc">${esc(s.desc)}</div></div></div>
+      <div class="sepline fade-row">${ICONS.sep}<i></i></div>
+      <div class="row static-row fade-row">${logo(r.bank)}<div class="row-text"><div class="row-name">${esc(r.name)}</div><div class="row-desc">${esc(recDesc(r))}</div></div></div>
+      <div class="divider fade-row"></div>
+      <div class="cf-group fade-row"><div class="cf-label">Nội dung</div><div class="cf-value">${esc(st.content)}</div></div>
+      <button class="cf-btn fade-row" data-go>Tiếp tục</button>
+    </div></div>`);
+    $('[data-go]', n).addEventListener('click', openConfirm);
+    return n;
+  }
+
+  // ---------- chips ----------
+  function setChips(mode) {
+    chipsEl.innerHTML = ''; chipsEl.dataset.mode = mode;
+    const defs = mode === 'edit'
+      ? [['Sửa số tiền', null, () => startEdit('amount')], ['Sửa nội dung', null, () => startEdit('content')], ['Sửa nguồn tiền', null, openSrcSheet]]
+      : [['Dán', 'copy', pasteClipboard], ['Tải ảnh', 'album', () => toast('Tải ảnh: luồng bóc tách ảnh chưa có trong bản demo này.')], ['Chụp ảnh', 'camera', () => toast('Chụp ảnh: luồng bóc tách ảnh chưa có trong bản demo này.')]];
+    defs.forEach(([label, icon, fn], i) => {
+      const b = el(`<button class="chip${icon ? '' : ' edit-chip'}">${icon ? `<span>${ICONS[icon]}</span>` : ''}${label}</button>`);
+      b.addEventListener('click', fn); chipsEl.appendChild(b);
+      setTimeout(() => b.classList.add('in'), 40 + i * 60);
+    });
+    updateInset();
+  }
+  async function pasteClipboard() {
+    try { const t = await navigator.clipboard.readText(); if (t) { input.value = t; syncHasText(); input.focus(); return; } } catch (e) { /* ignore */ }
+    toast('Không đọc được bộ nhớ tạm. Bạn gõ trực tiếp vào ô chat nhé.');
+  }
+
+  // ================= LUỒNG GÕ DÃY SỐ =================
+  function send() {
+    const text = input.value.trim();
+    if (!text || coachStep) return;
+    input.value = ''; syncHasText();
+    run(() => handle(text));
+  }
+  async function handle(text) {
+    if (st.edit) return handleEdit(text);
+    const digits = text.replace(/[\s.\-]/g, '');
+    const numeric = /^\d+$/.test(digits);
+    const g0 = st.gen;
+    while (st.phase === 'busy') { await sleep(120); if (g0 !== st.gen) return; }
+    if (st.edit) return handleEdit(text);
+    if (st.phase === 'askAmount') return handleAmount(text);
+    if (st.phase === 'askBank' && !numeric) {
+      const b = matchBank(text);
+      addUser(text);
+      if (b) return chooseBank(b, true);
+      return botSay(`Không tìm thấy ngân hàng “${text}”. Bạn chọn trong danh sách ngân hàng giúp mình nhé.`);
+    }
+    if (numeric) return lookup(digits, text);
+    addUser(text);
+    await botSay('Bản demo này hỗ trợ luồng gõ dãy số. Bạn thử nhập số điện thoại, số tài khoản hoặc số thẻ nhé.');
+  }
+  function matchBank(text) {
+    const q = norm(text).replace(/^ngan hang\s+/, '');
+    return Object.keys(BANKS).find(k => k !== 'vtm' && (norm(BANKS[k].name) === q || BANKS[k].alias.some(a => q === a || q.includes(a))));
+  }
+
+  async function lookup(digits, raw, reuse) {
+    const w = guard();
+    if (chipsEl.dataset.mode === 'edit') setChips('input');
+    const userEl = reuse || addUser(fmtTyped(raw));
+    setPhase('busy');
+    const t = addTyping();
+    if (digits === SLOW_NO && !st.slowUsed) {
+      st.slowUsed = true;
+      await w(2600);
+      toText(t, 'Việc tra cứu đang lâu hơn bình thường. Bạn nhập lại số tài khoản để thử lại nhé.');
+      const btn = el(`<button class="resend" aria-label="Gửi lại">${ICONS.reload}</button>`);
+      userEl.insertBefore(btn, userEl.firstChild);
+      btn.addEventListener('click', () => { btn.remove(); run(() => lookup(digits, raw)); });
+      setPhase('idle');
+      return;
+    }
+    await w(850);
+    if (digits.length < 6) {
+      toText(t, `Không tìm thấy thông tin với dãy số ${digits}. Bạn kiểm tra lại và nhập số điện thoại, số tài khoản hoặc số thẻ nhé.`);
+      hideBlocks(); setPhase('idle'); return;
+    }
+    if (isCard(digits)) {
+      t.remove();
+      return showInfo({ name: fakeName(digits), bank: BIN[digits.slice(0, 6)] || 'vcb', acct: digits, kind: 'card' });
+    }
+    const key = isPhone(digits) ? normPhone(digits) : digits;
+    st.lookup = { digits: key, kind: isPhone(digits) ? 'phone' : 'acct' };
+    const hist = HISTORY[key];
+    if (hist) {
+      toText(t, 'Bạn muốn chuyển tiền cho ai?'); await w(300);
+      addBlock(listBlock(hist, true));
+    } else {
+      toText(t, 'Bạn muốn chuyển tiền đến ngân hàng nào?'); await w(300);
+      addBlock(listBlock([], true));
+    }
+    setPhase('askBank');
+  }
+
+  async function chooseBank(bank, typed) {
+    const w = guard();
+    closeSheets();
+    if (!typed) addUser(BANKS[bank].name);
+    if (!st.lookup) return;
+    setPhase('busy');
+    const t = addTyping();
+    await w(800);
+    const d = st.lookup.digits;
+    if (d === NOT_EXIST.acct && bank === NOT_EXIST.bank) {
+      toText(t, `Số tài khoản ${d} tại ${BANKS[bank].name} không tồn tại hoặc đã đóng. Bạn kiểm tra và nhập lại số tài khoản nhé.`);
+      hideBlocks(); setPhase('idle'); st.lookup = null; return;
+    }
+    t.remove();
+    showInfo({ name: fakeName(d + bank), bank, acct: d, kind: 'acct' });
+  }
+
+  async function pickRecipient(r, bubble) {
+    if (st.phase === 'busy' || coachStep) return;
+    run(async () => { addUser(bubble); await showInfo(r); });
+  }
+  async function showInfo(rec) {
+    const w = guard();
+    st.rec = rec; st.amount = null; st.content = `${SENDER} chuyen tien`;
+    setPhase('busy');
+    addBlock(infoBlock());
+    await w(250);
+    await botSay('Bạn muốn chuyển bao nhiêu tiền?', 600);
+    setPhase('askAmount');
+    setChips('input');
+  }
+
+  function amountError(v) {
+    if (!v) return 'Số tiền chưa hợp lệ. Bạn nhập lại, ví dụ 500000 hoặc 500k nhé.';
+    if (v < 2000) return 'Số tiền tối thiểu mỗi giao dịch là 2.000đ. Bạn nhập lại nhé.';
+    if (v > 100000000) return 'Số tiền tối đa mỗi giao dịch là 100.000.000đ. Bạn nhập lại nhé.';
+    if (v > st.src.balance) return `Số dư ${st.src.name} không đủ (${fmtMoney(st.src.balance)}). Bạn nhập số tiền nhỏ hơn hoặc đổi nguồn tiền nhé.`;
+    return null;
+  }
+  async function handleAmount(text) {
+    const v = parseAmount(text);
+    addUser(v ? fmtMoney(v) : text);
+    const err = amountError(v);
+    if (err) return botSay(err);
+    st.amount = v;
+    await showConfirmBlock();
+  }
+  async function showConfirmBlock() {
+    const w = guard();
+    setPhase('busy');
+    const t = addTyping(); await w(650); t.remove();
+    addBlock(confirmBlock());
+    setPhase('confirm');
+    setChips('edit');
+  }
+
+  // ---------- sửa thông tin ----------
+  function startEdit(field) {
+    if (st.phase !== 'confirm') return;
+    st.edit = field;
+    dock.classList.add('editing');
+    $('#replyLabel').textContent = field === 'amount' ? 'Chỉnh sửa số tiền' : 'Chỉnh sửa nội dung';
+    input.value = field === 'amount' ? fmtMoney(st.amount).replace('đ', '') : st.content;
+    input.placeholder = field === 'amount' ? 'Nhập số tiền mới' : 'Nhập nội dung mới';
+    syncHasText(); updateInset();
+    input.focus();
+    try { input.setSelectionRange(input.value.length, input.value.length); } catch (e) { /* noop */ }
+  }
+  function cancelEdit() {
+    st.edit = null; dock.classList.remove('editing'); input.value = ''; syncHasText(); setPhase(st.phase); updateInset();
+  }
+  async function handleEdit(text) {
+    if (st.edit === 'amount') {
+      const v = parseAmount(text); addUser(v ? fmtMoney(v) : text);
+      const err = amountError(v);
+      if (err) { input.value = text; syncHasText(); return botSay(err); }
+      st.amount = v;
+    } else {
+      addUser(text); st.content = text;
+    }
+    cancelEdit(); closeKb();
+    await showConfirmBlock();
+  }
+
+  // ---------- bottom sheets ----------
+  function renderBanks(q = '') {
+    const list = $('#bankList');
+    const nq = norm(q);
+    const keys = PICKER.filter(k => !nq || norm(BANKS[k].name).includes(nq) || norm(BANKS[k].full).includes(nq) || BANKS[k].alias.some(a => a.includes(nq)));
+    list.innerHTML = keys.length ? keys.map(k => `<button class="bs-row" data-bank="${k}"><span class="bs-logo"><img src="${BANKS[k].logo}" alt=""></span><span class="bs-text"><span class="bs-name">${BANKS[k].name}</span><span class="bs-full">${BANKS[k].full}</span></span>${ICONS.arrow}</button>`).join('')
+      : '<div class="bs-empty">Không tìm thấy ngân hàng phù hợp</div>';
+    $$('.bs-row', list).forEach(b => b.addEventListener('click', () => run(() => chooseBank(b.dataset.bank))));
+  }
+  function openSheet(id) { closeKb(); screen.classList.add('sheet-open'); const s = $(id); s.classList.add('open'); s.setAttribute('aria-hidden', 'false'); }
+  function closeSheets() { screen.classList.remove('sheet-open'); $$('.bank-sheet, .src-sheet').forEach(s => { s.classList.remove('open'); s.setAttribute('aria-hidden', 'true'); }); }
+  function openBankSheet() { if (st.phase !== 'askBank' || coachStep) return; $('#bankSearch').value = ''; renderBanks(); openSheet('#bankSheet'); }
+  function openSrcSheet() {
+    if (!['askAmount', 'confirm'].includes(st.phase)) return;
+    const list = $('#srcList');
+    list.innerHTML = SOURCES.map(s => `<button class="bs-row" data-src="${s.id}"><span class="bs-logo"><img src="${s.logo}" alt=""></span><span class="bs-text"><span class="bs-name">${s.name}</span><span class="bs-full">${s.desc}</span></span>${s.id === st.src.id ? '<span style="color:#EE0033;font-weight:700">✓</span>' : ICONS.arrow}</button>`).join('');
+    $$('.bs-row', list).forEach(b => b.addEventListener('click', () => run(() => chooseSource(b.dataset.src))));
+    openSheet('#srcSheet');
+  }
+  async function chooseSource(id) {
+    closeSheets();
+    const s = SOURCES.find(x => x.id === id);
+    if (s.id === st.src.id) return;
+    if (st.edit) cancelEdit();
+    addUser(`Nguồn tiền: ${s.name}`);
+    if (st.amount && st.amount > s.balance) return botSay(`Số dư ${s.name} không đủ để chuyển ${fmtMoney(st.amount)}. Bạn chọn nguồn khác hoặc sửa số tiền nhé.`);
+    st.src = s;
+    if (st.phase === 'confirm') return showConfirmBlock();
+    setPhase('busy'); addBlock(infoBlock());
+    await botSay('Bạn muốn chuyển bao nhiêu tiền?', 500); setPhase('askAmount');
+  }
+
+  // ---------- xác nhận (Gate 9) ----------
+  function openConfirm() {
+    if (st.phase !== 'confirm') return;
+    closeKb(); if (st.edit) cancelEdit();
+    const r = st.rec, s = st.src;
+    const label = r.kind === 'card' ? 'Số thẻ nhận' : (r.bank === 'vtm' ? 'Số điện thoại nhận' : 'Số tài khoản nhận');
+    $('#confirmBody').innerHTML = `
+      <div class="cl-head"><span class="g">Xác nhận chuyển tiền</span><br>${fmtMoney(st.amount)}<br><span class="g">đến</span> ${esc(r.name)}</div>
+      <div class="cl-sec"><h4>Từ tài khoản</h4><div class="cl-src"><span><img src="${s.logo}" alt="">${esc(s.name)}</span><span>${fmtMoney(s.balance)}</span></div></div>
+      <div class="cl-sec"><h4>Chi tiết giao dịch</h4><div class="cl-rows">
+        <div class="cl-row">Tài khoản nhận<b class="cl-acc"><img src="${BANKS[r.bank].logo}" alt="">${BANKS[r.bank].name}</b></div>
+        <div class="cl-row">${label}<b>${esc(acctDisp(r))}</b></div>
+        <div class="cl-row">Nội dung giao dịch<b>${esc(st.content)}</b></div>
+      </div></div>`;
+    $('#confirmTotal').innerHTML = fmtMoney(st.amount).replace('đ', '<small>đ</small>');
+    const L = $('#confirmLayer'); L.classList.add('open'); L.setAttribute('aria-hidden', 'false');
+  }
+  function closeConfirm() { const L = $('#confirmLayer'); L.classList.remove('open'); L.setAttribute('aria-hidden', 'true'); }
+
+  // ================= MÀN MỞ ĐẦU (3 CASE) =================
   let timers = [];
   const later = (fn, ms) => { const t = setTimeout(fn, ms); timers.push(t); return t; };
   const clearTimers = () => { timers.forEach(clearTimeout); timers = []; };
-  const nextFrame = (fn) => requestAnimationFrame(() => requestAnimationFrame(fn));
+  const nextFrame = fn => requestAnimationFrame(() => requestAnimationFrame(fn));
+  let currentCase = 'A', navOpen = false, coachStep = 0, skipCoach = false;
 
-  // ---------- State ----------
-  let currentCase = 'A';
-  let navOpen = false;
-  let coachStep = 0;
-
-  function setCase(c, rerun = true) {
-    currentCase = c;
-    $$('.case').forEach(b => { const on = b.dataset.case === c; b.classList.toggle('is-on', on); b.setAttribute('aria-checked', on); });
-    $('#mCaseLabel').textContent = c;
-    history.replaceState(null, '', '#' + c);
-    if (navOpen && rerun) runEntrance();
+  function openingBlocks(caseId) {
+    const linkAll = `<span class="link" data-all>Xem tất cả ${ICONS.arrow}</span>`;
+    if (caseId === 'C') {
+      const saved = el(`<div class="bot"><div class="glass list">
+          <div class="list-head fade-row"><h3>Danh sách đã lưu</h3>${linkAll}</div>
+          <div class="carousel">${SAVED.map((s, i) => `<div class="contact fade-row" data-i="${i}">${logo(s.bank, 'bank lg')}<span>${esc(s.label)}</span></div>`).join('')}</div></div></div>`);
+      $$('.contact', saved).forEach(c => c.addEventListener('click', () => { const s = SAVED[+c.dataset.i]; pickRecipient(s, s.name); }));
+      const recent = el(`<div class="bot"><div class="glass list">
+          <div class="list-head fade-row"><h3>Gần đây</h3></div>
+          ${RECENT.map((r, i) => (i ? '<div class="divider fade-row"></div>' : '') + `<div class="row fade-row" data-i="${i}">${logo(r.bank)}<div class="row-text"><div class="row-name">${esc(r.name)}</div><div class="row-desc">${esc(r.desc)}</div></div><span class="row-act">Chuyển lại</span></div>`).join('')}</div></div>`);
+      $$('.row', recent).forEach(row => row.addEventListener('click', () => {
+        if (st.phase === 'busy' || coachStep) return;
+        const r = RECENT[+row.dataset.i];
+        run(async () => { addUser(`Chuyển lại cho ${r.name}`); st.rec = r; st.amount = r.last.amount; st.content = r.last.content; await showConfirmBlock(); });
+      }));
+      return [saved, recent];
+    }
+    const sub = caseId === 'A' ? '<div class="list-sub fade-row">Những người này đang dùng Viettel Money</div>' : '';
+    const card = el(`<div class="bot"><div class="glass list">
+        <div class="list-head fade-row"><h3>Danh bạ của bạn</h3>${linkAll}</div>${sub}
+        ${CONTACTS.map((c, i) => (i ? '<div class="divider fade-row"></div>' : '') + `<div class="row fade-row" data-i="${i}">${logo(c.bank)}<div class="row-text"><div class="row-name">${esc(c.label)}</div><div class="row-desc">${esc(c.desc)}</div></div>${ICONS.arrow}</div>`).join('')}
+      </div></div>`);
+    $$('.row', card).forEach(row => row.addEventListener('click', () => { const c = CONTACTS[+row.dataset.i]; pickRecipient(c, c.label); }));
+    return [card];
   }
 
-  // ---------- Hiệu ứng vào màn ----------
   function resetTransfer() {
-    clearTimers();
-    closeKb(true);
-    hideCoach(true);
+    st.gen++; clearTimers();
+    Object.assign(st, { phase: 'idle', lookup: null, rec: null, src: SOURCES[0], amount: null, content: null, edit: null, slowUsed: false });
+    dock.classList.remove('editing');
+    closeKb(true); closeSheets(); closeConfirm(); hideCoach(true);
     tContent.innerHTML = '';
-    tContent.style.transform = '';
-    chips.forEach(c => c.classList.remove('in'));
+    chipsEl.innerHTML = '';
     chatbox.classList.remove('in');
-    input.value = '';
+    input.value = ''; syncHasText(); setPhase('idle');
   }
 
   function runEntrance() {
     resetTransfer();
     const start = navOpen ? 380 : 0;
-
-    // dock
-    chips.forEach((c, i) => later(() => c.classList.add('in'), start + 120 + i * 60));
+    later(() => setChips('input'), start + 80);
     later(() => chatbox.classList.add('in'), start + 260);
-
-    // bot gõ...
     later(() => {
-      const wrap = document.createElement('div');
-      wrap.className = 'bot anim';
-      wrap.innerHTML = '<div class="glass bubble-box"><div class="typing"><i></i><i></i><i></i></div></div>';
-      tContent.appendChild(wrap);
-      nextFrame(() => wrap.classList.add('in'));
-
+      const wrap = addTyping();
       later(() => {
-        const box = wrap.firstElementChild;
-        const w0 = box.offsetWidth, h0 = box.offsetHeight;
-        box.innerHTML = '<div class="bubble">Bạn muốn chuyển tiền cho ai?</div>';
-        box.style.width = 'auto'; box.style.height = 'auto';
-        const w1 = box.offsetWidth, h1 = box.offsetHeight;
-        box.style.width = w0 + 'px'; box.style.height = h0 + 'px';
-        box.firstElementChild.style.opacity = '0';
-        box.offsetWidth; // reflow
-        box.style.transition = 'width .36s cubic-bezier(.32,.72,0,1), height .36s cubic-bezier(.32,.72,0,1)';
-        box.style.width = w1 + 'px'; box.style.height = h1 + 'px';
-        box.firstElementChild.style.transition = 'opacity .3s ease .1s';
-        box.firstElementChild.style.opacity = '1';
-        later(() => { box.style.width = ''; box.style.height = ''; box.style.transition = ''; }, 420);
-
-        // các thẻ danh sách
-        const cards = cardsFor(currentCase);
-        let t = 260;
-        cards.forEach((html, ci) => {
-          later(() => {
-            const tmp = document.createElement('div');
-            tmp.innerHTML = html.trim();
-            const card = tmp.firstElementChild;
-            tContent.appendChild(card);
-            nextFrame(() => card.classList.add('in'));
-            $$('.fade-row', card).forEach((r, ri) => later(() => r.classList.add('in'), 140 + ri * 55));
-          }, t + ci * 220);
-        });
-        const doneAt = t + cards.length * 220 + 700;
-        if (currentCase === 'A') later(showCoach, doneAt + 200);
+        toText(wrap, 'Bạn muốn chuyển tiền cho ai?');
+        const blocks = openingBlocks(currentCase);
+        blocks.forEach((b, i) => later(() => {
+          b.classList.add('block', 'anim'); append(b);
+          $$('.fade-row', b).forEach((r, ri) => later(() => r.classList.add('in'), 140 + ri * 55));
+        }, 260 + i * 220));
+        if (currentCase === 'A' && !skipCoach) later(showCoach, 260 + blocks.length * 220 + 900);
+        skipCoach = false;
       }, 750);
     }, start + 120);
   }
 
-  // ---------- Điều hướng ----------
   function openTransfer() {
     if (navOpen) return;
     navOpen = true;
@@ -168,156 +522,166 @@
   }
   function closeTransfer() {
     if (!navOpen) return;
-    clearTimers();
-    closeKb(true);
-    hideCoach();
+    st.gen++; clearTimers(); closeKb(true); closeSheets(); closeConfirm(); hideCoach();
     navOpen = false;
     screen.classList.remove('nav-open');
     $('#transfer').setAttribute('aria-hidden', 'true');
     setTimeout(() => { if (!navOpen) resetTransfer(); }, 560);
   }
 
-  // ---------- Coachmark (case A) ----------
-  function showCoach() {
-    coachStep = 1;
-    spot.classList.remove('step2');
-    coach.classList.add('on');
-    tip1.classList.add('show');
-    tip2.classList.remove('show');
-  }
-  function coachNext() {
-    coachStep = 2;
-    tip1.classList.remove('show');
-    spot.classList.add('step2');
-    later(() => tip2.classList.add('show'), 380);
-  }
+  // ---------- coach ----------
+  function showCoach() { coachStep = 1; spot.classList.remove('step2'); coach.classList.add('on'); tip1.classList.add('show'); tip2.classList.remove('show'); }
+  function coachNext() { coachStep = 2; tip1.classList.remove('show'); spot.classList.add('step2'); later(() => tip2.classList.add('show'), 380); }
   function hideCoach(instant) {
-    coachStep = 0;
-    tip1.classList.remove('show');
-    tip2.classList.remove('show');
-    coach.classList.remove('on');
-    if (instant) spot.classList.remove('step2');
-    else setTimeout(() => { if (!coachStep) spot.classList.remove('step2'); }, 450);
+    coachStep = 0; tip1.classList.remove('show'); tip2.classList.remove('show'); coach.classList.remove('on');
+    if (instant) spot.classList.remove('step2'); else setTimeout(() => { if (!coachStep) spot.classList.remove('step2'); }, 450);
   }
 
-  // ---------- Bàn phím ----------
-  const DOCK_SHIFT = 278;          // ô chat từ y=712 lên y=434 (theo Figma B2)
-  const CHIPS_TOP_OPEN = 382;      // cụm chip khi bàn phím mở
-  let shiftOn = false;
-
+  // ================= BÀN PHÍM =================
+  const DOCK_SHIFT = 278;
+  let shiftOn = false, kbMode = 'abc';
+  const kbOpen = () => screen.classList.contains('kb-open');
+  function updateInset() {
+    const base = kbOpen() ? 44 + DOCK_SHIFT : 44;
+    tScroll.style.setProperty('--scroll-bottom', (base + dock.offsetHeight + 16) + 'px');
+    screen.style.setProperty('--scroll-bottom', (base + dock.offsetHeight + 16) + 'px');
+  }
   function openKb() {
     if (coachStep || !navOpen) { input.blur(); return; }
-    if (screen.classList.contains('kb-open')) return;
-    screen.classList.add('kb-open');
-    $('#kb').setAttribute('aria-hidden', 'false');
+    if (kbOpen()) return;
+    screen.classList.add('kb-open'); $('#kb').setAttribute('aria-hidden', 'false');
     dock.style.transform = `translateY(${-DOCK_SHIFT}px)`;
-    const bottom = 116 + tContent.offsetHeight;
-    const limit = CHIPS_TOP_OPEN - 16;
-    const shift = Math.max(0, bottom - limit);
-    tContent.style.transform = shift ? `translateY(${-shift}px)` : '';
+    updateInset(); setTimeout(() => scrollBottom(), 60); setTimeout(() => scrollBottom(), 400);
   }
   function closeKb(silent) {
-    screen.classList.remove('kb-open');
-    $('#kb').setAttribute('aria-hidden', 'true');
-    dock.style.transform = '';
-    tContent.style.transform = '';
+    screen.classList.remove('kb-open'); $('#kb').setAttribute('aria-hidden', 'true');
+    dock.style.transform = ''; updateInset();
     if (!silent || document.activeElement === input) input.blur();
   }
-
   function buildKeyboard() {
-    const rows = ['qwertyuiop', 'asdfghjkl', 'zxcvbnm'];
-    const el = $('#kbRows');
-    const mk = (cls, label, key) => `<button class="key ${cls}" data-key="${key}" tabindex="-1">${label}</button>`;
-    el.innerHTML =
-      `<div class="kb-row">${[...rows[0]].map(k => mk('', k, k)).join('')}</div>` +
-      `<div class="kb-row">${[...rows[1]].map(k => mk('', k, k)).join('')}</div>` +
-      `<div class="kb-row">${mk('fn', ICONS.shift, 'shift')}<span style="width:8px"></span>${[...rows[2]].map(k => mk('', k, k)).join('')}<span style="width:8px"></span>${mk('fn', ICONS.bksp, 'back')}</div>` +
-      `<div class="kb-row">${mk('fn n123', '123', 'n123')}${mk('space', 'dấu cách', ' ')}${mk('fn ret', ICONS.ret, 'ret')}</div>`;
-  }
-  function renderShift() {
-    const k = $('.key[data-key="shift"]');
-    k.innerHTML = shiftOn ? ICONS.shiftOn : ICONS.shift;
-    $$('.key').forEach(b => { const d = b.dataset.key; if (d.length === 1 && d !== ' ') b.textContent = shiftOn ? d.toUpperCase() : d; });
+    const elx = $('#kbRows');
+    const mk = (cls, label, key) => `<button class="key ${cls}" data-key="${esc(key)}" tabindex="-1">${label}</button>`;
+    const row = keys => [...keys].map(k => mk('', shiftOn ? k.toUpperCase() : k, k)).join('');
+    if (kbMode === 'abc') {
+      elx.innerHTML = `<div class="kb-row">${row('qwertyuiop')}</div><div class="kb-row">${row('asdfghjkl')}</div>` +
+        `<div class="kb-row">${mk('fn', shiftOn ? ICONS.shiftOn : ICONS.shift, 'shift')}<span style="width:8px"></span>${row('zxcvbnm')}<span style="width:8px"></span>${mk('fn', ICONS.bksp, 'back')}</div>` +
+        `<div class="kb-row">${mk('fn n123', '123', 'n123')}${mk('space', 'dấu cách', ' ')}${mk('fn ret', ICONS.ret, 'ret')}</div>`;
+    } else {
+      elx.innerHTML = `<div class="kb-row">${row('1234567890')}</div><div class="kb-row">${row('-/:;()đ&@"')}</div>` +
+        `<div class="kb-row">${mk('fn', '#+=', 'noop')}<span style="width:8px"></span>${row('.,?!\'')}<span style="width:8px"></span>${mk('fn', ICONS.bksp, 'back')}</div>` +
+        `<div class="kb-row">${mk('fn n123', 'ABC', 'n123')}${mk('space', 'dấu cách', ' ')}${mk('fn ret', ICONS.ret, 'ret')}</div>`;
+      $$('.kb-row:nth-child(2) .key, .kb-row:nth-child(3) .key:not(.fn)', elx).forEach(k => { k.style.flexBasis = '31.5px'; });
+    }
   }
   function insertText(t) {
     const s = input.selectionStart ?? input.value.length, e = input.selectionEnd ?? input.value.length;
     input.value = input.value.slice(0, s) + t + input.value.slice(e);
-    input.setSelectionRange(s + t.length, s + t.length);
+    input.setSelectionRange(s + t.length, s + t.length); syncHasText();
   }
   function onKey(key) {
-    if (key === 'shift') { shiftOn = !shiftOn; renderShift(); return; }
+    if (key === 'noop') return;
+    if (key === 'shift') { shiftOn = !shiftOn; buildKeyboard(); return; }
+    if (key === 'n123') { kbMode = kbMode === 'abc' ? '123' : 'abc'; buildKeyboard(); return; }
     if (key === 'back') {
       const s = input.selectionStart, e = input.selectionEnd;
       if (s !== e) { input.value = input.value.slice(0, s) + input.value.slice(e); input.setSelectionRange(s, s); }
       else if (s > 0) { input.value = input.value.slice(0, s - 1) + input.value.slice(s); input.setSelectionRange(s - 1, s - 1); }
-      return;
+      syncHasText(); return;
     }
-    if (key === 'ret') { closeKb(); return; }
-    if (key === 'n123') return;
+    if (key === 'ret') { if (input.value.trim()) send(); else closeKb(); return; }
     insertText(shiftOn ? key.toUpperCase() : key);
-    if (shiftOn) { shiftOn = false; renderShift(); }
+    if (shiftOn) { shiftOn = false; buildKeyboard(); }
+  }
+  function syncHasText() { chatbox.classList.toggle('has-text', !!input.value.trim()); }
+
+  // ================= THỬ NHANH =================
+  function renderTries() {
+    const html = TRIES.map(([n, d]) => `<button class="try" data-n="${n}"><code>${n}</code><span>${d}</span></button>`).join('');
+    ['#triesList', '#triesListM'].forEach(id => { const x = $(id); if (x) x.innerHTML = html; });
+    $$('.try').forEach(b => b.addEventListener('click', () => tryNumber(b.dataset.n)));
+  }
+  async function tryNumber(n) {
+    $('#mSheet').classList.remove('open');
+    if (!navOpen) { skipCoach = true; openTransfer(); await sleep(2100); }
+    if (coachStep) hideCoach();
+    if (st.edit) cancelEdit();
+    closeSheets(); closeConfirm();
+    if (st.phase === 'busy') { await sleep(1200); }
+    input.focus();
+    input.value = ''; syncHasText();
+    for (const ch of n) { insertText(ch); await sleep(28); }
+    await sleep(220);
+    send();
   }
 
-  // ---------- Fit iPhone vào màn hình ----------
+  // ================= FIT =================
   function fit() {
-    const wrap = $('#deviceWrap');
-    const dev = $('#device');
+    const wrap = $('#deviceWrap'), dev = $('#device');
     const mobile = window.innerWidth <= 760;
     const W = mobile ? 375 : 399, H = mobile ? 812 : 836;
-    const s = mobile
-      ? Math.min(window.innerWidth / W, window.innerHeight / H)
-      : Math.min(1, (window.innerHeight - 48) / H, (window.innerWidth - 48) / W);
-    dev.style.transformOrigin = '0 0';
-    dev.style.transform = `scale(${s})`;
-    wrap.style.width = W * s + 'px';
-    wrap.style.height = H * s + 'px';
+    const s = mobile ? Math.min(window.innerWidth / W, window.innerHeight / H) : Math.min(1, (window.innerHeight - 48) / H, (window.innerWidth - 48) / W);
+    dev.style.transformOrigin = '0 0'; dev.style.transform = `scale(${s})`;
+    wrap.style.width = W * s + 'px'; wrap.style.height = H * s + 'px';
   }
 
-  // ---------- Khởi tạo ----------
+  function setCase(c, rerun = true) {
+    currentCase = c;
+    $$('.case').forEach(b => { const on = b.dataset.case === c; b.classList.toggle('is-on', on); b.setAttribute('aria-checked', on); });
+    $('#mCaseLabel').textContent = c;
+    history.replaceState(null, '', '#' + c);
+    if (navOpen && rerun) runEntrance();
+  }
+
+  // ================= INIT =================
   function init() {
-    $$('[data-icon]').forEach(el => { el.innerHTML = ICONS[el.dataset.icon] || ''; });
-    buildKeyboard();
+    $$('[data-icon]').forEach(x => { x.innerHTML = ICONS[x.dataset.icon] || ''; });
+    buildKeyboard(); renderTries();
 
     $('#tabTransfer').addEventListener('click', openTransfer);
     $('#btnBack').addEventListener('click', closeTransfer);
+    $('#btnScan').addEventListener('click', () => { if (!coachStep) toast('Quét mã QR chưa có trong bản demo này.'); });
     $('#tipNext').addEventListener('click', coachNext);
     $('#tipDone').addEventListener('click', () => hideCoach());
-    $('#btnRestart').addEventListener('click', () => {
-      closeTransfer();
-      $('#homeScroll').scrollTo({ top: 0, behavior: 'smooth' });
-      screen.classList.remove('hint-off');
-    });
-    $$('.case').forEach(b => b.addEventListener('click', () => {
-      setCase(b.dataset.case);
-      $('#mSheet').classList.remove('open');
-    }));
+    $('#btnRestart').addEventListener('click', () => { closeTransfer(); $('#homeScroll').scrollTo({ top: 0, behavior: 'smooth' }); screen.classList.remove('hint-off'); });
+    $$('.case').forEach(b => b.addEventListener('click', () => { setCase(b.dataset.case); $('#mSheet').classList.remove('open'); }));
     $('#mCaseBtn').addEventListener('click', () => $('#mSheet').classList.add('open'));
-    $('#mSheet').addEventListener('click', (e) => { if (e.target.id === 'mSheet') e.currentTarget.classList.remove('open'); });
+    $('#mSheet').addEventListener('click', e => { if (e.target.id === 'mSheet') e.currentTarget.classList.remove('open'); });
 
-    // bàn phím
+    // composer
     input.addEventListener('focus', openKb);
-    chatbox.addEventListener('pointerdown', () => { if (!coachStep) setTimeout(() => input.focus(), 0); });
-    $('#tScroll').addEventListener('pointerdown', () => { if (screen.classList.contains('kb-open')) closeKb(); });
-    $('#kb').addEventListener('pointerdown', (e) => {
-      e.preventDefault(); // giữ focus ở ô nhập
-      const k = e.target.closest('.key');
-      if (!k) return;
-      k.classList.add('pressed');
-      setTimeout(() => k.classList.remove('pressed'), 110);
+    input.addEventListener('input', syncHasText);
+    chatbox.addEventListener('pointerdown', e => { if (e.target.closest('.send-btn')) return; if (!coachStep) setTimeout(() => input.focus(), 0); });
+    $('#sendBtn').addEventListener('pointerdown', e => e.preventDefault());
+    $('#sendBtn').addEventListener('click', send);
+    $('#replyClose').addEventListener('click', () => { cancelEdit(); closeKb(); });
+    tScroll.addEventListener('pointerdown', e => { if (kbOpen() && !e.target.closest('button, .row, .choose-row, .contact')) closeKb(); });
+    $('#kb').addEventListener('pointerdown', e => {
+      e.preventDefault();
+      const k = e.target.closest('.key'); if (!k) return;
+      k.classList.add('pressed'); setTimeout(() => k.classList.remove('pressed'), 110);
       onKey(k.dataset.key);
     });
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === 'Escape') { e.preventDefault(); closeKb(); return; }
-      const map = { ' ': ' ', Backspace: 'back' };
-      const key = map[e.key] || (e.key.length === 1 ? e.key.toLowerCase() : null);
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter') { e.preventDefault(); if (input.value.trim()) send(); else closeKb(); return; }
+      if (e.key === 'Escape') { e.preventDefault(); if (st.edit) cancelEdit(); closeKb(); return; }
+      const key = e.key === 'Backspace' ? 'back' : (e.key.length === 1 ? e.key.toLowerCase() : null);
       const btn = key && $(`.key[data-key="${CSS.escape(key)}"]`);
       if (btn) { btn.classList.add('pressed'); setTimeout(() => btn.classList.remove('pressed'), 110); }
     });
 
+    // sheets
+    $('#sheetDim').addEventListener('click', closeSheets);
+    $('#bankClose').addEventListener('click', closeSheets);
+    $('#srcClose').addEventListener('click', closeSheets);
+    $('#bankSearch').addEventListener('input', e => renderBanks(e.target.value));
+    $('#confirmClose').addEventListener('click', closeConfirm);
+    $('#confirmAuth').addEventListener('click', () => toast('Bước xác thực giao dịch (Gate 7) chưa có trong bản demo này.'));
+    tContent.addEventListener('click', e => { if (e.target.closest('[data-all]')) toast('Danh sách đầy đủ chưa có trong bản demo này.'); });
+
     const fromHash = (location.hash || '').replace('#', '').toUpperCase();
     setCase(['A', 'B', 'C'].includes(fromHash) ? fromHash : 'A', false);
-    fit();
-    window.addEventListener('resize', fit);
+    fit(); window.addEventListener('resize', fit);
+    updateInset();
   }
   init();
 })();

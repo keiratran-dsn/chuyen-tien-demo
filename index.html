@@ -35,7 +35,11 @@
     <div class="panel-actions">
       <button class="btn-ghost" id="btnRestart">↺ Chạy lại từ Home</button>
     </div>
-    <p class="panel-note">Mẹo: bấm vào ô “Nhập/dán thông tin chuyển tiền” để mở bàn phím. Có thể gõ bằng bàn phím máy tính.</p>
+    <div class="tries">
+      <div class="tries-title">Thử luồng “Gõ dãy số”</div>
+      <div class="tries-list" id="triesList"></div>
+    </div>
+    <p class="panel-note">Gõ trực tiếp vào ô chat (bàn phím máy tính hoặc bàn phím trên màn hình) rồi bấm gửi. Bấm một dòng ở trên để điền sẵn dãy số mẫu.</p>
   </aside>
 
   <!-- Chọn case trên mobile -->
@@ -174,14 +178,15 @@
           </div>
 
           <div class="t-dock" id="tDock">
-            <div class="chips" id="chips">
-              <button class="chip"><span data-icon="copy"></span>Dán</button>
-              <button class="chip"><span data-icon="album"></span>Tải ảnh</button>
-              <button class="chip"><span data-icon="camera"></span>Chụp ảnh</button>
+            <div class="chips" id="chips"></div>
+            <div class="reply-bar" id="replyBar">
+              <span data-icon="edit"></span><span id="replyLabel">Chỉnh sửa nội dung</span>
+              <button class="reply-x" id="replyClose" aria-label="Huỷ chỉnh sửa"><span data-icon="close"></span></button>
             </div>
-            <label class="chatbox" id="chatbox">
+            <div class="chatbox" id="chatbox">
               <input id="chatInput" type="text" inputmode="none" autocomplete="off" spellcheck="false" placeholder="Nhập/dán thông tin chuyển tiền" />
-            </label>
+              <button class="send-btn" id="sendBtn" aria-label="Gửi"><span data-icon="send"></span></button>
+            </div>
           </div>
 
           <header class="t-nav">
@@ -202,6 +207,35 @@
               <svg width="20" height="26" viewBox="0 0 20 26" fill="none" stroke="#222" stroke-width="1.5" stroke-linecap="round"><rect x="6" y="2" width="8" height="14" rx="4"/><path d="M2.5 12a7.5 7.5 0 0 0 15 0M10 19.5V24"/></svg>
             </div>
           </div>
+
+          <!-- Bottom sheet chọn ngân hàng -->
+          <div class="sheet-dim" id="sheetDim"></div>
+          <div class="bank-sheet" id="bankSheet" aria-hidden="true">
+            <div class="bs-handle"></div>
+            <div class="bs-head"><button class="bs-close" id="bankClose">Đóng</button><div class="bs-title">Chọn ngân hàng</div></div>
+            <label class="bs-search"><span data-icon="search"></span><input id="bankSearch" type="text" placeholder="Tìm ngân hàng" autocomplete="off" /></label>
+            <div class="bs-list" id="bankList"></div>
+          </div>
+          <!-- Bottom sheet chọn nguồn tiền -->
+          <div class="src-sheet" id="srcSheet" aria-hidden="true">
+            <div class="bs-handle"></div>
+            <div class="bs-head"><button class="bs-close" id="srcClose">Đóng</button><div class="bs-title">Chọn nguồn tiền</div></div>
+            <div class="bs-list" id="srcList"></div>
+          </div>
+          <!-- Xác nhận chuyển tiền (Gate 9) -->
+          <div class="confirm-layer" id="confirmLayer" aria-hidden="true">
+            <div class="status status-light" data-icon="status"></div>
+            <div class="cl-behind"></div>
+            <div class="cl-sheet">
+              <button class="cl-x" id="confirmClose" aria-label="Đóng"><span data-icon="closeLine"></span></button>
+              <div class="cl-body" id="confirmBody"></div>
+              <div class="cl-foot">
+                <div class="cl-total"><span>Tổng tiền thanh toán</span><b id="confirmTotal"></b></div>
+                <button class="cl-btn" id="confirmAuth">Xác thực giao dịch</button>
+              </div>
+            </div>
+          </div>
+          <div class="toast" id="toast"></div>
 
           <!-- Coachmark (case A) -->
           <div class="coach" id="coach">
@@ -234,6 +268,8 @@
     <button class="case" data-case="A"><span class="case-tag">A</span><span class="case-body"><b>Vào lần đầu</b><small>Tooltip giới thiệu tính năng</small></span></button>
     <button class="case" data-case="B"><span class="case-tag">B</span><span class="case-body"><b>Chưa chuyển cho ai</b><small>Danh sách theo danh bạ</small></span></button>
     <button class="case" data-case="C"><span class="case-tag">C</span><span class="case-body"><b>Đã từng chuyển</b><small>Đã lưu + gần đây</small></span></button>
+    <div class="m-sheet-title" style="margin-top:8px">Thử luồng “Gõ dãy số”</div>
+    <div class="tries-list" id="triesListM"></div>
   </div>
 </div>
 
