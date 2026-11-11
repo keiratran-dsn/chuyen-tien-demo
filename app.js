@@ -60,7 +60,7 @@
   const NOT_EXIST = { acct: '21510000123457', bank: 'bidv' };
   const SLOW_NO = '21510000123456';
   const FAKE_NAMES = ['LE THI HOA', 'TRAN THI MAI', 'PHAM VAN NAM', 'DO THU HA', 'HOANG MINH TUAN', 'VU THI LAN', 'NGO DUC ANH'];
-  const SENDER = 'BAC';
+  const SENDER = 'Ngan';
 
   const CONTACTS = [
     { label: 'Mẹ', name: 'NGUYEN THI HUONG', desc: '0912 345 xxx · ViettelPay', bank: 'vtm', acct: '0912345111', kind: 'phone' },
@@ -75,8 +75,8 @@
     { label: 'TRAN THI K…', name: 'TRAN THI KIM', bank: 'mb', acct: '0868123456789', kind: 'acct' },
   ];
   const RECENT = [
-    { name: 'NGUYEN THI LINH', bank: 'vcb', acct: '0071000312345', kind: 'acct', desc: 'Vietcombank · 0071 0003 xxxx', last: { amount: 500000, content: 'BAC chuyen tien an trua' } },
-    { name: 'TRAN VAN TUAN', bank: 'vtm', acct: '0912345678', kind: 'phone', desc: 'ViettelPay · 0912 345 xxx', last: { amount: 200000, content: 'BAC chuyen tien' } },
+    { name: 'NGUYEN THI LINH', bank: 'vcb', acct: '0071000312345', kind: 'acct', desc: 'Vietcombank · 0071 0003 xxxx', last: { amount: 500000, content: 'Ngan chuyen tien an trua' } },
+    { name: 'TRAN VAN TUAN', bank: 'vtm', acct: '0912345678', kind: 'phone', desc: 'ViettelPay · 0912 345 xxx', last: { amount: 200000, content: 'Ngan chuyen tien' } },
   ];
   const TRIES = [
     ['0912 345 678', 'SĐT có trong lịch sử'],
