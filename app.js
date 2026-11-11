@@ -784,9 +784,23 @@
   // ================= FIT =================
   function fit() {
     const wrap = $('#deviceWrap'), dev = $('#device');
-    const mobile = window.innerWidth <= 760;
-    const W = mobile ? 375 : 399, H = mobile ? 812 : 836;
-    const s = mobile ? Math.min(window.innerWidth / W, window.innerHeight / H) : Math.min(1, (window.innerHeight - 48) / H, (window.innerWidth - 48) / W);
+    const vw = window.innerWidth, vh = window.innerHeight;
+    const mobile = vw <= 760;
+    const scr = $('#screen');
+    if (mobile) {
+      // Điện thoại: phủ kín màn hình — rộng 375 theo thiết kế, chiều cao co giãn theo tỉ lệ máy
+      const s = vw / 375;
+      const H = Math.max(560, Math.round(vh / s));
+      const s2 = H * s > vh ? vh / H : s; // máy nằm ngang / quá thấp thì thu theo chiều cao
+      dev.style.height = H + 'px'; scr.style.height = H + 'px';
+      scr.style.setProperty('--sh', H + 'px');
+      dev.style.transformOrigin = '0 0'; dev.style.transform = `scale(${s2})`;
+      wrap.style.width = 375 * s2 + 'px'; wrap.style.height = H * s2 + 'px';
+      return;
+    }
+    dev.style.height = ''; scr.style.height = ''; scr.style.removeProperty('--sh');
+    const W = 399, H = 836;
+    const s = Math.min(1, (vh - 48) / H, (vw - 48) / W);
     dev.style.transformOrigin = '0 0'; dev.style.transform = `scale(${s})`;
     wrap.style.width = W * s + 'px'; wrap.style.height = H * s + 'px';
   }
