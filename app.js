@@ -153,7 +153,7 @@
 
   // ================= TRẠNG THÁI HỘI THOẠI =================
   const PH = { idle: 'Nhập/dán thông tin chuyển tiền', askBank: 'Nhập tên ngân hàng', askAmount: 'Nhập số tiền', confirm: 'Nhập/dán thông tin chuyển tiền', busy: 'Nhập/dán thông tin chuyển tiền' };
-  const st = { gen: 0, phase: 'idle', lookup: null, rec: null, src: SOURCES[0], amount: null, content: null, edit: null, slowUsed: false };
+  const st = { gen: 0, phase: 'idle', lookup: null, rec: null, src: SOURCES[0], amount: null, content: null, edit: null, slowUsed: false, keep: null, pending: null };
   function setPhase(p) {
     st.phase = p; if (!st.edit) input.placeholder = PH[p] || PH.idle;
     if (typeof setKbMode === 'function' && p !== 'busy' && !st.edit) setKbMode(p === 'askAmount' ? 'num' : 'abc');
@@ -215,10 +215,9 @@
       <div class="list-head fade-row"><h3>Thông tin chuyển tiền</h3></div>
       <div class="row fade-row" data-src><img class="bank" src="${s.logo}" alt=""><div class="row-text"><div class="row-name">${esc(s.name)}</div><div class="row-desc">${esc(s.desc)}</div></div>${chev}</div>
       <div class="sepline fade-row">${ICONS.sep}<i></i></div>
-      <div class="row fade-row" data-rec>${logo(r.bank)}<div class="row-text"><div class="row-name">${esc(r.name)}</div><div class="row-desc">${esc(recDesc(r))}</div></div>${chev}</div>
+      <div class="row static-row fade-row">${logo(r.bank)}<div class="row-text"><div class="row-name">${esc(r.name)}</div><div class="row-desc">${esc(recDesc(r))}</div></div></div>
     </div></div>`);
     $('[data-src]', n).addEventListener('click', openSrcSheet);
-    $('[data-rec]', n).addEventListener('click', () => toast('Muốn đổi người nhận, bạn nhập lại SĐT / số tài khoản / số thẻ ở ô chat.'));
     return n;
   }
   function confirmBlock() {
@@ -280,6 +279,8 @@
     const g0 = st.gen;
     while (st.phase === 'busy') { await sleep(120); if (g0 !== st.gen) return; }
     if (st.edit) return handleEdit(text);
+    if (st.phase === 'askSwitch') { addUser(text); return botSay(`Bạn chọn [Đổi người nhận] hoặc [Tiếp tục với ${st.rec.name}] giúp mình nhé.`); }
+    if (['askAmount', 'confirm'].includes(st.phase) && st.rec && numeric && looksLikeRecipient(digits)) return askSwitch(digits, text);
     if (st.phase === 'askAmount') return handleAmount(text);
     if (st.phase === 'askBank' && !numeric) {
       const b = matchBank(text);
@@ -293,7 +294,56 @@
   }
   function matchBank(text) {
     const q = norm(text).replace(/^ngan hang\s+/, '');
-    return Object.keys(BANKS).find(k => k !== 'vtm' && (norm(BANKS[k].name) === q || BANKS[k].alias.some(a => q === a || q.includes(a))));
+    const keys = Object.keys(BANKS).filter(k => k !== 'vtm');
+    const exact = keys.find(k => norm(BANKS[k].name) === q || BANKS[k].alias.includes(q));
+    if (exact) return exact;
+    // khớp theo từ nguyên vẹn (tránh “vietcombank” bị nhận nhầm thành “mb”)
+    const words = ` ${q} `;
+    return keys.find(k => BANKS[k].alias.some(a => words.includes(` ${a} `)));
+  }
+
+  // Đang dở luồng mà người dùng nhập người nhận mới → hỏi có đổi người nhận không
+  const looksLikeRecipient = d => d.startsWith('0') || d.length > 9;
+  function switchBlock(target) {
+    const n = el(`<div class="bot"><div class="glass list">
+      <div class="choose-row fade-row" data-sw="yes">Đổi người nhận ${chev}</div>
+      <div class="divider fade-row"></div>
+      <div class="choose-row fade-row" data-sw="no">Tiếp tục với ${esc(st.rec.name)} ${chev}</div>
+    </div></div>`);
+    $('[data-sw="yes"]', n).addEventListener('click', () => run(() => doSwitch(true)));
+    $('[data-sw="no"]', n).addEventListener('click', () => run(() => doSwitch(false)));
+    return n;
+  }
+  async function askSwitch(digits, raw) {
+    const w = guard();
+    closeKb();
+    const userEl = addUser(fmtTyped(raw));
+    st.pending = { digits, raw, userEl, prev: st.phase };
+    setPhase('busy');
+    const t = addTyping(); await w(650);
+    toText(t, `Bạn đang chuyển tiền cho ${st.rec.name}. Bạn có muốn đổi người nhận sang ${fmtTyped(raw)} không?`);
+    await w(300);
+    addBlock(switchBlock());
+    setChips('input');
+    setPhase('askSwitch');
+    closeKb(); input.blur();
+    setTimeout(() => scrollBottom(), 420);
+  }
+  async function doSwitch(yes) {
+    if (st.phase !== 'askSwitch' || !st.pending) return;
+    const p = st.pending; st.pending = null;
+    if (yes) {
+      addUser('Đổi người nhận');
+      st.keep = { amount: st.amount, content: st.content };
+      st.rec = null; st.lookup = null;
+      return lookup(p.digits, p.raw, p.userEl);
+    }
+    addUser(`Tiếp tục với ${st.rec.name}`);
+    if (p.prev === 'confirm') return showConfirmBlock();
+    const w = guard();
+    setPhase('busy'); addBlock(infoBlock()); await w(250);
+    await botSay('Bạn muốn chuyển bao nhiêu tiền?', 500);
+    setPhase('askAmount'); setChips('input'); autoAmountKb();
   }
 
   async function lookup(digits, raw, reuse) {
@@ -358,6 +408,11 @@
   async function showInfo(rec) {
     const w = guard();
     st.rec = rec; st.amount = null; st.content = `${SENDER} chuyen tien`;
+    if (st.keep) {
+      const k = st.keep; st.keep = null;
+      st.content = k.content || st.content;
+      if (k.amount && !amountError(k.amount)) { st.amount = k.amount; return showConfirmBlock(); }
+    }
     setPhase('busy');
     addBlock(infoBlock());
     await w(250);

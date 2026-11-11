@@ -27,3 +27,5 @@ Gõ vào ô chat rồi gửi (Enter / nút gửi), hoặc bấm các dòng mẫu
 | `21510000123456` | Tra cứu quá lâu → icon gửi lại trên tin cũ |
 
 Sau khi có người nhận: nhập số tiền (`500000`, `500k`, `1tr`…) → block xác nhận kiểu LPBank với chip [Sửa số tiền] [Sửa nội dung] [Sửa nguồn tiền] → [Tiếp tục] → bottom sheet Xác nhận chuyển tiền (Gate 9). Mỗi lúc chỉ hiển thị 1 block chính, block cũ ẩn đi.
+
+Đang dở luồng (đang hỏi số tiền hoặc ở block xác nhận) mà gõ một người nhận mới (ví dụ `0987 654 321`) → app hỏi “Bạn đang chuyển tiền cho … Bạn có muốn đổi người nhận sang … không?” với 2 lựa chọn [Đổi người nhận] / [Tiếp tục với …]. Đổi → tra lại người nhận mới, giữ số tiền và nội dung đã nhập. Dòng người nhận trên thẻ không còn icon > (không sửa trực tiếp).
