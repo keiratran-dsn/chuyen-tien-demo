@@ -5,6 +5,10 @@
   // ---------- Icons (xuất từ Figma) ----------
   const G = (id, a, b) => `<linearGradient id="${id}" x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" gradientUnits="userSpaceOnUse"><stop stop-color="#6788FF"/><stop offset="1" stop-color="#FD5CEA"/></linearGradient>`;
   const ICONS = {
+    tick: `<svg width="41" height="41" viewBox="10.35 6.9 41.4 41.4" fill="none" style="overflow:visible"><path d="M10.3516 27.6032C10.3516 16.1695 19.6203 6.90088 31.0539 6.90088C42.4874 6.90088 51.7561 16.1695 51.7561 27.6032C51.7561 39.0369 42.4874 48.3055 31.0539 48.3055C19.6203 48.3055 10.3516 39.0369 10.3516 27.6032Z" fill="#34C759"/><path d="M31.0537 36.229C35.8176 36.229 39.6796 32.3671 39.6796 27.603C39.6796 22.8389 35.8176 18.9771 31.0537 18.9771C26.2897 18.9771 22.4277 22.8389 22.4277 27.603C22.4277 32.3671 26.2897 36.229 31.0537 36.229Z" stroke="white" stroke-width="1.72519" stroke-linecap="round" stroke-linejoin="round"/><path d="M28.4658 27.6031L30.191 29.3283L33.6414 25.8779" stroke="white" stroke-width="1.72519" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+    share: `<svg width="20" height="20" viewBox="0 0 20 20" fill="#222"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.71738 8.4834C4.88 8.4834 4.20117 9.16223 4.20117 9.9996C4.20117 10.837 4.88 11.5158 5.71738 11.5158C6.55475 11.5158 7.23358 10.837 7.23358 9.9996C7.23358 9.16223 6.55475 8.4834 5.71738 8.4834ZM2.95117 9.9996C2.95117 8.47187 4.18964 7.2334 5.71738 7.2334C7.24511 7.2334 8.48358 8.47187 8.48358 9.9996C8.48358 11.5273 7.24511 12.7658 5.71738 12.7658C4.18964 12.7658 2.95117 11.5273 2.95117 9.9996Z"/><path fill-rule="evenodd" clip-rule="evenodd" d="M12.6529 4.9307C12.8508 5.21348 12.7821 5.60319 12.4993 5.80114L8.21687 8.79882C7.93409 8.99677 7.54438 8.928 7.34643 8.64522C7.14849 8.36243 7.21726 7.97273 7.50004 7.77478L11.7824 4.7771C12.0652 4.57915 12.4549 4.64792 12.6529 4.9307Z"/><path fill-rule="evenodd" clip-rule="evenodd" d="M12.6529 15.0688C12.8508 14.786 12.7821 14.3963 12.4993 14.1984L8.21687 11.2007C7.93409 11.0027 7.54438 11.0715 7.34643 11.3543C7.14849 11.6371 7.21726 12.0268 7.50004 12.2247L11.7824 15.2224C12.0652 15.4204 12.4549 15.3516 12.6529 15.0688Z"/><path fill-rule="evenodd" clip-rule="evenodd" d="M14.2818 14.0508C13.4445 14.0508 12.7656 14.7296 12.7656 15.567C12.7656 16.4044 13.4445 17.0832 14.2818 17.0832C15.1192 17.0832 15.798 16.4044 15.798 15.567C15.798 14.7296 15.1192 14.0508 14.2818 14.0508ZM11.5156 15.567C11.5156 14.0393 12.7541 12.8008 14.2818 12.8008C15.8096 12.8008 17.048 14.0393 17.048 15.567C17.048 17.0947 15.8096 18.3332 14.2818 18.3332C12.7541 18.3332 11.5156 17.0947 11.5156 15.567Z"/><path fill-rule="evenodd" clip-rule="evenodd" d="M14.2818 2.9165C13.4445 2.9165 12.7656 3.59533 12.7656 4.43271C12.7656 5.27008 13.4445 5.94891 14.2818 5.94891C15.1192 5.94891 15.798 5.27008 15.798 4.43271C15.798 3.59533 15.1192 2.9165 14.2818 2.9165ZM11.5156 4.43271C11.5156 2.90498 12.7541 1.6665 14.2818 1.6665C15.8096 1.6665 17.048 2.90498 17.048 4.43271C17.048 5.96044 15.8096 7.19891 14.2818 7.19891C12.7541 7.19891 11.5156 5.96044 11.5156 4.43271Z"/></svg>`,
+    time: `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#222" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"><path d="M10 17.7085C5.74349 17.7085 2.29119 14.257 2.29102 10.0005C2.29102 5.74387 5.74338 2.2915 10 2.2915C14.2573 2.29168 17.708 5.74393 17.708 10.0005C17.7078 14.2569 14.2572 17.7083 10 17.7085Z"/><path d="M12.8594 12.4524L9.71777 10.5782V6.53906"/></svg>`,
+    save: `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#292D32" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"><path d="M12.0837 8.875H7.91699"/><path d="M10 6.8418V11.0085"/><path d="M14.0166 1.6665H5.98327C4.20827 1.6665 2.7666 3.1165 2.7666 4.88317V16.6248C2.7666 18.1248 3.8416 18.7582 5.15827 18.0332L9.22494 15.7748C9.65827 15.5332 10.3583 15.5332 10.7833 15.7748L14.8499 18.0332C16.1666 18.7665 17.2416 18.1332 17.2416 16.6248V4.88317C17.2333 3.1165 15.7916 1.6665 14.0166 1.6665Z"/></svg>`,
     copy: `<svg viewBox="0 0 16 16" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M9.85383 3.40216C9.7947 3.30408 9.72606 3.21708 9.64966 3.14111C9.38016 2.87314 8.96589 2.69482 8.3938 2.69482H7.80884C7.646 2.69491 7.458 2.69507 7.25648 2.69525C7.02361 2.69545 6.77269 2.69567 6.52173 2.6958C5.7826 2.69617 5.04276 2.69592 4.76221 2.69583L4.64673 2.6958C4.08084 2.6993 3.67072 2.87862 3.40356 3.146C3.1364 3.41343 2.96518 3.81691 2.96509 4.35889V8.68018C2.96514 9.22529 3.13818 9.63008 3.40747 9.89795C3.484 9.97407 3.57218 10.043 3.67232 10.1026V10.6431C3.67232 10.8417 3.68945 11.031 3.72282 11.2097C3.33019 11.0889 2.9841 10.8871 2.70239 10.6069C2.2125 10.1196 1.96514 9.44282 1.96509 8.68018V4.35889C1.96519 3.59987 2.21071 2.92629 2.69653 2.43994C3.18247 1.95351 3.86219 1.7014 4.64185 1.69678H5.23267L5.78699 1.69635L6.52173 1.6958L7.25608 1.69525L7.80884 1.69482H8.3938C9.17937 1.69482 9.8647 1.94486 10.3547 2.43213C10.6494 2.72513 10.8563 3.08674 10.9744 3.49434C10.7416 3.43368 10.4878 3.40198 10.2151 3.40198L9.85383 3.40216Z" fill="url(#gc0)"/><path d="M11.2627 4.36157C12.071 4.36165 12.7745 4.61862 13.2773 5.11841C13.7803 5.61855 14.0352 6.3148 14.0352 7.09985V11.5667C14.0352 12.3481 13.782 13.0409 13.2832 13.5403C12.7844 14.0394 12.0866 14.2991 11.2842 14.304H9.33984C8.85573 14.3041 8.37167 14.3048 8.00879 14.3049H7.4043C6.59572 14.3049 5.89149 14.0482 5.38867 13.5481C4.88582 13.0479 4.63184 12.3516 4.63184 11.5667V7.09985C4.63184 6.31852 4.88405 5.62548 5.38281 5.12622C5.88144 4.62719 6.5796 4.36838 7.38184 4.36353H7.99316L9.32617 4.36255L10.6572 4.36157H11.2627ZM9.32617 5.36255C8.38449 5.36302 7.44174 5.36252 7.3877 5.36255C6.79901 5.36615 6.3708 5.55316 6.09082 5.83325C5.81079 6.11357 5.63184 6.53554 5.63184 7.09985V11.5667C5.63184 12.1341 5.8115 12.5584 6.09375 12.8391C6.37602 13.1199 6.80917 13.3049 7.4043 13.3049H8.00879L9.33984 13.304C10.2803 13.3036 11.2218 13.304 11.2783 13.304C11.8673 13.3004 12.296 13.1137 12.5762 12.8333C12.8563 12.5528 13.0352 12.1308 13.0352 11.5667V7.09985C13.0352 6.5325 12.8546 6.10915 12.5723 5.82837C12.2899 5.54761 11.8577 5.36165 11.2627 5.36157H10.6572L9.32617 5.36255Z" fill="url(#gc1)"/><defs>${G('gc0', [1.97, 6.26], [10.97, 6.26])}${G('gc1', [4.63, 9.13], [14.03, 9.13])}</defs></svg>`,
     album: `<svg viewBox="0 0 16 16" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.35092 2.45801C3.0225 1.73716 3.9792 1.33325 5.10976 1.33325H10.8911C12.0248 1.33325 12.9824 1.73686 13.6536 2.45825C14.321 3.17562 14.6679 4.16636 14.6664 5.27899V10.7215C14.6664 11.8339 14.319 12.8244 13.6513 13.5417C12.9798 14.263 12.0221 14.6666 10.8877 14.6666H5.10976C3.97682 14.6666 3.01988 14.2629 2.34871 13.5416C1.68132 12.8244 1.33374 11.834 1.33374 10.7215V5.27833C1.33374 4.16533 1.68299 3.17492 2.35092 2.45801ZM3.08427 3.14124C2.61792 3.6418 2.33605 4.37335 2.33605 5.27833V10.7215C2.33605 11.627 2.61691 12.3585 3.08246 12.8588C3.54424 13.355 4.22473 13.6643 5.10976 13.6643H10.8877C11.7747 13.6643 12.4558 13.3549 12.9177 12.8587C13.3834 12.3585 13.6641 11.6271 13.6641 10.7215V5.27833C13.6653 4.37298 13.3851 3.6411 12.9198 3.141C12.4582 2.64492 11.7773 2.33556 10.8911 2.33556H5.10976C4.22769 2.33556 3.54696 2.64462 3.08427 3.14124Z" fill="url(#ga0)"/><path fill-rule="evenodd" clip-rule="evenodd" d="M7.14938 5.86705C7.14938 6.54862 6.59745 7.10055 5.91588 7.10055C5.23498 7.10055 4.68237 6.54862 4.68237 5.86705C4.68237 5.18548 5.23498 4.63354 5.91588 4.63354C6.59678 4.63421 7.14871 5.18615 7.14938 5.86705Z" stroke="url(#ga1)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.168 9.98714C13.5513 9.35235 12.3652 8.07007 11.0756 8.07007C9.78526 8.07007 9.04155 10.8986 7.8007 10.8986C6.55984 10.8986 5.43258 9.61963 4.43829 10.4395C3.44401 11.2587 2.50317 12.9339 2.50317 12.9339" stroke="url(#ga2)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/><defs>${G('ga0', [1.33, 7.73], [14.67, 7.73])}${G('ga1', [4.68, 5.82], [7.15, 5.82])}${G('ga2', [2.5, 10.4], [14.17, 10.4])}</defs></svg>`,
     camera: `<svg viewBox="0 0 16 16" fill="none"><path d="M5.7876 2.29739C6.58017 1.98224 9.41896 1.98226 10.2114 2.29739C10.6437 2.46943 10.9355 2.79501 11.2036 3.28176L11.5054 3.85989L11.5239 3.89016L11.5503 3.92532C11.6877 4.07486 11.9172 4.16555 12.0688 4.16555C13.5035 4.16556 14.6665 5.32894 14.6665 6.76321V10.6265C14.6663 12.4558 13.1824 13.939 11.353 13.939H4.64697C2.81719 13.939 1.33373 12.456 1.3335 10.6265V6.76321C1.3335 5.32905 2.49663 4.16574 3.93115 4.16555C4.08234 4.16555 4.31311 4.07485 4.45068 3.92532L4.46143 3.91165L4.49561 3.85891L4.79639 3.28176C5.0642 2.79516 5.35539 2.46954 5.7876 2.29739ZM9.76221 3.19973C9.07575 3.00589 6.68968 3.01555 6.15771 3.22708C5.98913 3.29425 5.83872 3.46188 5.67236 3.76419L5.41553 4.26028L5.35205 4.37454C5.29936 4.46216 5.24719 4.53651 5.18701 4.60208C4.84937 4.96908 4.34932 5.16555 3.93115 5.16555L3.82178 5.16946C2.99051 5.22585 2.3335 5.91814 2.3335 6.76321V10.6265C2.33373 11.9037 3.36951 12.939 4.64697 12.939H11.353C12.6301 12.939 13.6663 11.9035 13.6665 10.6265V6.76321C13.6665 5.88128 12.9513 5.16556 12.0688 5.16555L11.9526 5.16067C11.5603 5.12836 11.1195 4.93509 10.813 4.6011C10.7537 4.53647 10.7012 4.46324 10.6489 4.37649L10.6216 4.32766L10.5435 4.18313L10.3276 3.76419C10.1612 3.46211 10.0108 3.29435 9.84229 3.22708L9.76221 3.19973Z" fill="url(#gm0)"/><path d="M11.6697 5.72778C12.0379 5.72778 12.3364 6.02626 12.3364 6.39445C12.3364 6.73634 12.079 7.01812 11.7475 7.05663L11.6697 7.06112C11.2955 7.06112 10.9971 6.76264 10.9971 6.39445C10.9971 6.05256 11.2544 5.77078 11.586 5.73227L11.6697 5.72778Z" fill="url(#gm1)"/><path d="M7.99976 6.19385C9.4465 6.19385 10.6188 7.36627 10.6189 8.81299C10.6189 10.2598 9.44656 11.4321 7.99976 11.4321C6.55304 11.432 5.38062 10.2597 5.38062 8.81299C5.38072 7.36633 6.5531 6.19395 7.99976 6.19385ZM7.99976 7.19385C7.10538 7.19395 6.38072 7.91862 6.38062 8.81299C6.38062 9.70745 7.10532 10.432 7.99976 10.4321C8.89428 10.4321 9.6189 9.70751 9.6189 8.81299C9.61879 7.91855 8.89422 7.19385 7.99976 7.19385Z" fill="url(#gm2)"/><defs>${G('gm0', [1.33, 7.76], [14.67, 7.76])}${G('gm1', [11, 6.37], [12.34, 6.37])}${G('gm2', [5.38, 8.71], [10.62, 8.71])}</defs></svg>`,
@@ -152,7 +156,7 @@
   function toast(msg) { toastEl.textContent = msg; toastEl.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => toastEl.classList.remove('show'), 2200); }
 
   // ================= TRẠNG THÁI HỘI THOẠI =================
-  const PH = { idle: 'Nhập/dán thông tin chuyển tiền', askBank: 'Nhập tên ngân hàng', askAmount: 'Nhập số tiền', confirm: 'Nhập/dán thông tin chuyển tiền', busy: 'Nhập/dán thông tin chuyển tiền' };
+  const PH = { idle: 'Nhập/dán thông tin chuyển tiền', askBank: 'Nhập tên ngân hàng', askAmount: 'Nhập số tiền', confirm: 'Nhập/dán thông tin chuyển tiền', done: 'Nhập/dán thông tin chuyển tiền', busy: 'Nhập/dán thông tin chuyển tiền' };
   const st = { gen: 0, phase: 'idle', lookup: null, rec: null, src: SOURCES[0], amount: null, content: null, edit: null, slowUsed: false, keep: null, pending: null };
   function setPhase(p) {
     st.phase = p; if (!st.edit) input.placeholder = PH[p] || PH.idle;
@@ -244,6 +248,8 @@
     chipsEl.innerHTML = ''; chipsEl.dataset.mode = mode;
     const defs = mode === 'edit'
       ? [['Sửa số tiền', null, () => startEdit('amount')], ['Sửa nội dung', null, () => startEdit('content')], ['Sửa nguồn tiền', null, openSrcSheet]]
+      : mode === 'done'
+      ? [['Thực hiện lại', null, () => run(redoTransfer)], ['Chuyển tiền mới', null, () => run(newTransfer)]]
       : [['Dán', 'copy', pasteClipboard], ['Tải ảnh', 'album', () => toast('Tải ảnh: luồng bóc tách ảnh chưa có trong bản demo này.')], ['Chụp ảnh', 'camera', () => toast('Chụp ảnh: luồng bóc tách ảnh chưa có trong bản demo này.')]];
     defs.forEach(([label, icon, fn], i) => {
       const b = el(`<button class="chip${icon ? '' : ' edit-chip'}">${icon ? `<span>${ICONS[icon]}</span>` : ''}${label}</button>`);
@@ -512,6 +518,61 @@
     if (st.phase === 'confirm') return showConfirmBlock();
     setPhase('busy'); addBlock(infoBlock());
     await botSay('Bạn muốn chuyển bao nhiêu tiền?', 500); setPhase('askAmount'); autoAmountKb();
+  }
+
+  // ---------- kết quả giao dịch (bill) ----------
+  const pad2 = n => String(n).padStart(2, '0');
+  function nowText() { const d = new Date(); return `${pad2(d.getHours())}:${pad2(d.getMinutes())} · ${pad2(d.getDate())}/${pad2(d.getMonth() + 1)}/${d.getFullYear()}`; }
+  function txnId() { return 'FT' + String(Date.now()).slice(-11); }
+  function resultBlock() {
+    const r = st.rec, s = st.src;
+    const n = el(`<div class="bot bill-wrap"><div class="bill">
+      <div class="bill-head fade-row">${ICONS.tick}<span>Chuyển tiền thành công</span></div>
+      <div class="cf-group fade-row"><div class="cf-amount">${fmtMoney(st.amount)}</div><div class="cf-label">${esc(vnWords(st.amount))} · Miễn phí giao dịch</div></div>
+      <div class="divider fade-row"></div>
+      <div class="bill-rows fade-row">
+        <div class="bill-row"><span>Người nhận</span><div class="bill-val"><b>${esc(r.name)}</b><small>${esc(recDesc(r))}</small></div></div>
+        <div class="bill-row"><span>Nguồn tiền</span><b>${esc(s.name)}</b></div>
+        <div class="bill-row"><span>Nội dung</span><b>${esc(st.content)}</b></div>
+        <div class="bill-row"><span>Thời gian</span><b>${nowText()}</b></div>
+        <div class="bill-row"><span>Mã giao dịch</span><b>${txnId()}</b></div>
+      </div>
+      <div class="divider fade-row"></div>
+      <div class="bill-acts fade-row">
+        <button class="bill-act" data-act="share"><i>${ICONS.share}</i><span>Chia sẻ</span></button>
+        <button class="bill-act" data-act="history"><i>${ICONS.time}</i><span>Lịch sử GD</span></button>
+        <button class="bill-act" data-act="save"><i>${ICONS.save}</i><span>Lưu người nhận</span></button>
+      </div>
+    </div></div>`);
+    $('[data-act="share"]', n).addEventListener('click', () => toast('Chia sẻ biên lai chưa có trong bản demo này.'));
+    $('[data-act="history"]', n).addEventListener('click', () => toast('Lịch sử giao dịch chưa có trong bản demo này.'));
+    const sv = $('[data-act="save"]', n);
+    sv.addEventListener('click', () => { if (sv.classList.contains('saved')) return; sv.classList.add('saved'); $('span', sv).textContent = 'Đã lưu'; toast(`Đã lưu ${r.name} vào danh sách người nhận.`); });
+    return n;
+  }
+  async function doTransfer() {
+    if (st.phase !== 'confirm') return;
+    closeConfirm();
+    const w = guard();
+    addUser('Xác nhận chuyển tiền');
+    setPhase('busy'); setChips('input');
+    const t = addTyping(); await w(1100); t.remove();
+    addBlock(resultBlock());
+    setPhase('done'); setChips('done');
+    setTimeout(() => scrollBottom(), 420);
+  }
+  async function redoTransfer() {
+    if (st.phase !== 'done') return;
+    addUser('Thực hiện lại');
+    await showConfirmBlock();
+  }
+  async function newTransfer() {
+    if (st.phase !== 'done') return;
+    addUser('Chuyển tiền mới');
+    st.rec = null; st.lookup = null; st.amount = null; st.content = null; st.keep = null; st.pending = null;
+    setPhase('busy'); hideBlocks(); setChips('input');
+    await botSay('Bạn muốn chuyển tiền cho ai? Nhập số điện thoại, số tài khoản hoặc số thẻ nhé.', 500);
+    setPhase('idle');
   }
 
   // ---------- xác nhận (Gate 9) ----------
@@ -801,7 +862,7 @@
     $('#srcClose').addEventListener('click', closeSheets);
     $('#bankSearch').addEventListener('input', e => renderBanks(e.target.value));
     $('#confirmClose').addEventListener('click', closeConfirm);
-    $('#confirmAuth').addEventListener('click', () => toast('Bước xác thực giao dịch (Gate 7) chưa có trong bản demo này.'));
+    $('#confirmAuth').addEventListener('click', () => run(doTransfer));
     tContent.addEventListener('click', e => { if (e.target.closest('[data-all]')) toast('Danh sách đầy đủ chưa có trong bản demo này.'); });
 
     const fromHash = (location.hash || '').replace('#', '').toUpperCase();
