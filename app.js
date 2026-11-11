@@ -394,8 +394,12 @@
     await w(800);
     const d = st.lookup.digits;
     if (d === NOT_EXIST.acct && bank === NOT_EXIST.bank) {
-      toText(t, `Số tài khoản ${d} tại ${BANKS[bank].name} không tồn tại hoặc đã đóng. Bạn kiểm tra và nhập lại số tài khoản nhé.`);
-      hideBlocks(); setPhase('idle'); st.lookup = null; return;
+      toText(t, `Không tìm thấy tài khoản hợp lệ với số ${d} tại ${BANKS[bank].name}. Tài khoản có thể không tồn tại, đã đóng hoặc chọn nhầm ngân hàng. Bạn kiểm tra lại số tài khoản hoặc chọn ngân hàng khác nhé.`);
+      await w(300);
+      const blk = el(`<div class="bot"><div class="glass list"><div class="choose-row fade-row" data-choose>Chọn ngân hàng khác ${chev}</div></div></div>`);
+      $('[data-choose]', blk).addEventListener('click', openBankSheet);
+      addBlock(blk);
+      setPhase('askBank'); input.placeholder = 'Nhập lại số tài khoản'; return;
     }
     t.remove();
     showInfo({ name: fakeName(d + bank), bank, acct: d, kind: 'acct' });

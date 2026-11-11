@@ -22,7 +22,7 @@ Gõ vào ô chat rồi gửi (Enter / nút gửi), hoặc bấm các dòng mẫu
 | `0071000312345` | STK có trong lịch sử |
 | `19036688202401` | STK chưa có giao dịch → hỏi ngân hàng |
 | `9704 3661 2345 6789` | Thẻ khớp BIN → thẻ Thông tin chuyển tiền ngay |
-| `21510000123457` + BIDV | Ngân hàng báo TK không tồn tại / đã đóng |
+| `21510000123457` + BIDV | Không tìm thấy TK hợp lệ (không tồn tại / đã đóng / nhầm NH) → [Chọn ngân hàng khác] hoặc nhập lại STK |
 | `12345` | Không ra kết quả |
 | `21510000123456` | Tra cứu quá lâu → icon gửi lại trên tin cũ |
 
