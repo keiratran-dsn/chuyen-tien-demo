@@ -51,9 +51,9 @@ Panel bên trái có tab **Gõ chữ / tên** để bấm thử nhanh.
 
 Theo section Figma `3 · Dán / Tải ảnh / Chụp ảnh (AI) - Luồng chi tiết` (node 158:12163).
 
-- **Dán**: lần đầu hỏi quyền dán (giả lập iOS) → nội dung mẫu vào ô chat → gửi. Dán bằng thao tác hệ thống (Cmd/Ctrl+V) với đoạn dài cũng đi luồng AI.
-- **Tải ảnh**: mở thư viện ảnh mẫu → ảnh nằm trên ô chat (✕ để bỏ), có thể thêm ghi chú → gửi.
-- **Chụp ảnh**: lần đầu hỏi quyền Camera → khung chụp → ảnh nằm trên ô chat → gửi.
+- **Dán**: lần đầu hỏi quyền dán (pop-up iOS) → nội dung mẫu tự gửi, không cần bấm gửi. Dán bằng thao tác hệ thống (Cmd/Ctrl+V) đoạn dài vào ô chat rồi gửi cũng đi luồng AI.
+- **Tải ảnh**: mở thư viện ảnh mẫu → chọn xong ảnh tự gửi.
+- **Chụp ảnh**: lần đầu hỏi quyền Camera → khung chụp → chụp xong ảnh tự gửi.
 - Khi AI đọc: ô chat phát sáng xanh tím, placeholder “AI đang đọc thông tin chuyển tiền…”. Kết quả trả về dạng tin nhắn trong chat:
   - đủ STK + ngân hàng + số tiền → block xác nhận;
   - thiếu số tiền → thẻ Thông tin chuyển tiền + hỏi số tiền;

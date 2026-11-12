@@ -313,7 +313,7 @@
     blur: { src: 'assets/ai-blur.jpg', read: null },
   };
   const AI_LOOKUP = { '818108888': 'VUONG VAN DAT' };
-  let aiPasteKey = 'full', pasteBuf = null, attachKey = null, permPaste = false, permCam = false;
+  let aiPasteKey = 'full', pasteBuf = null, permPaste = false, permCam = false;
   const flat = t => t.replace(/\s*\n\s*/g, ' ').trim();
 
   // ---------- quyền hệ thống (giả lập iOS) ----------
@@ -344,18 +344,15 @@
       if (!ok) return;
       permPaste = true;
     }
-    clearAttach();
-    pasteBuf = AI_TEXT[aiPasteKey];
-    input.value = flat(pasteBuf); syncHasText();
-    input.focus({ preventScroll: true });
-    input.setSelectionRange(0, 0); input.scrollLeft = 0;
+    // Dán xong tự gửi, không cần bấm gửi
+    pasteBuf = null; input.value = ''; syncHasText(); closeKb();
+    run(() => aiRead({ text: AI_TEXT[aiPasteKey] }));
   }
   // Dán bằng thao tác hệ thống (Cmd/Ctrl+V, giữ để dán) — giữ nguyên xuống dòng cho bubble
   function onNativePaste(e) {
     const t = (e.clipboardData || window.clipboardData).getData('text');
     if (!t || (t.length < 30 && !t.includes('\n'))) return;
     e.preventDefault();
-    clearAttach();
     pasteBuf = t; input.value = flat(t); syncHasText();
   }
 
@@ -364,7 +361,7 @@
     if (st.phase === 'busy' || coachStep) return;
     closeKb();
     $('#galGrid').innerHTML = Object.entries(AI_IMAGES).map(([k, v]) => `<button class="gal-item" data-img="${k}"><img src="${v.src}" alt=""></button>`).join('');
-    $$('.gal-item').forEach(b => b.addEventListener('click', () => { closeSheets(); setAttach(b.dataset.img); }));
+    $$('.gal-item').forEach(b => b.addEventListener('click', () => { closeSheets(); sendImage(b.dataset.img); }));
     openSheet('#galSheet');
   }
   // ---------- Chụp ảnh ----------
@@ -381,25 +378,14 @@
   function closeCamera() { $('#cam').classList.remove('open'); }
   function shoot() {
     const cam = $('#cam'); cam.classList.add('flash');
-    setTimeout(() => { cam.classList.remove('flash', 'open'); setAttach('kofuku'); }, 260);
+    setTimeout(() => { cam.classList.remove('flash', 'open'); sendImage('kofuku'); }, 260);
   }
 
-  // ---------- ảnh chờ gửi (I1) ----------
-  function setAttach(key) {
-    if (pasteBuf && flat(pasteBuf) === input.value.trim()) input.value = '';
-    attachKey = key; pasteBuf = null;
-    const a = $('#attach'); $('#attachImg').src = AI_IMAGES[key].src;
-    a.hidden = false; requestAnimationFrame(() => a.classList.add('in'));
-    chatbox.classList.add('has-text');
-    if (!st.edit) input.placeholder = 'Thêm ghi chú (không bắt buộc)';
-    updateInset(); scrollBottom();
-  }
-  function clearAttach() {
-    if (!attachKey) return;
-    attachKey = null;
-    const a = $('#attach'); a.classList.remove('in'); a.hidden = true;
-    syncHasText(); if (!st.edit) input.placeholder = PH[st.phase] || PH.idle;
-    updateInset();
+  // ---------- chọn/chụp xong ảnh tự gửi ----------
+  function sendImage(key) {
+    if (st.phase === 'busy') return;
+    pasteBuf = null; input.value = ''; syncHasText();
+    run(() => aiRead({ img: key }));
   }
 
   // ---------- bubble người dùng ----------
@@ -434,18 +420,16 @@
     return { acct, bank, amount };
   }
 
-  async function aiRead({ text, img, note }) {
+  async function aiRead({ text, img }) {
     const w = guard();
     if (st.edit) cancelEdit();
     closeKb(); closeSheets(); hideBlocks();
     st.rec = null; st.lookup = null; st.amount = null; st.keep = null; st.scope = null; st.pending = null;
     const userEl = img ? addUserImage(img) : addUserMulti(text);
-    if (img && note) addUser(note);
     setPhase('busy'); setChips('input'); aiGlow(true);
     await w(img ? 2600 : 2000);
     aiGlow(false);
     let r = img ? (AI_IMAGES[img].read && { ...AI_IMAGES[img].read }) : aiParse(text);
-    if (img && note) { const n = aiParse(note); r = r ? { acct: r.acct || n.acct, bank: r.bank || n.bank, amount: r.amount || n.amount } : (n.acct || n.bank || n.amount ? n : null); }
     const src = img ? 'ảnh' : 'nội dung';
     if (!r || (!r.acct && !r.bank && !r.amount)) {
       await botSay(img
@@ -490,11 +474,6 @@
     if (composing) { pendingSend = true; input.blur(); return; }
     const text = input.value.trim();
     if (coachStep) return;
-    if (attachKey) {
-      if (st.phase === 'busy') return;
-      const img = attachKey; clearAttach(); clearInput();
-      return run(() => aiRead({ img, note: text }));
-    }
     if (pasteBuf && text && flat(pasteBuf) === text) {
       if (st.phase === 'busy') return;
       const full = pasteBuf; pasteBuf = null; clearInput();
@@ -999,7 +978,7 @@
     tContent.innerHTML = '';
     chipsEl.innerHTML = '';
     chatbox.classList.remove('in');
-    pasteBuf = null; clearAttach(); aiGlow(false); closeCamera();
+    pasteBuf = null; aiGlow(false); closeCamera();
     $('#viewer').classList.remove('open'); $('#sysAlert').classList.remove('open');
     input.value = ''; syncHasText(); setPhase('idle');
   }
@@ -1131,7 +1110,7 @@
     insertText(shiftOn ? key.toUpperCase() : key);
     if (shiftOn) { shiftOn = false; buildKeyboard(); }
   }
-  function syncHasText() { chatbox.classList.toggle('has-text', !!input.value.trim() || !!attachKey); }
+  function syncHasText() { chatbox.classList.toggle('has-text', !!input.value.trim()); }
 
   // ================= THỬ NHANH =================
   let triesTab = 'num';
@@ -1141,8 +1120,8 @@
     ['Dán · thiếu ngân hàng', 'STK + số tiền → hỏi ngân hàng', () => { aiPasteKey = 'noBank'; pasteClipboard(true); }],
     ['Dán · thiếu người nhận', 'Ngân hàng + số tiền → hỏi STK/số thẻ', () => { aiPasteKey = 'noRec'; pasteClipboard(true); }],
     ['Dán · không có thông tin', 'AI không đọc được', () => { aiPasteKey = 'none'; pasteClipboard(true); }],
-    ['Ảnh · tin nhắn chuyển khoản', 'Ảnh có STK + ngân hàng → hỏi số tiền', () => setAttach('kofuku')],
-    ['Ảnh · bị mờ', 'AI không đọc được ảnh', () => setAttach('blur')],
+    ['Ảnh · tin nhắn chuyển khoản', 'Ảnh có STK + ngân hàng → hỏi số tiền', () => sendImage('kofuku')],
+    ['Ảnh · bị mờ', 'AI không đọc được ảnh', () => sendImage('blur')],
   ];
   function renderTries() {
     const list = triesTab === 'num' ? TRIES : triesTab === 'text' ? TRIES_TEXT : TRIES_AI;
@@ -1160,8 +1139,7 @@
     closeSheets(); closeConfirm(); closeCamera();
     for (let i = 0; i < 40 && st.phase === 'busy'; i++) await sleep(150);
     input.value = ''; syncHasText();
-    fn(); await sleep(700);
-    send();
+    fn();
   }
   async function tryNumber(n) {
     $('#mSheet').classList.remove('open');
@@ -1213,7 +1191,6 @@
     // composer
     input.addEventListener('focus', openKb);
     input.addEventListener('paste', onNativePaste);
-    $('#attachX').addEventListener('click', () => { clearAttach(); });
     $('#galClose').addEventListener('click', closeSheets);
     $('#camCancel').addEventListener('click', closeCamera);
     $('#camShot').addEventListener('click', shoot);

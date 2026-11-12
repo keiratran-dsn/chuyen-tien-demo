@@ -524,14 +524,6 @@ button { font: inherit; color: inherit; border: 0; background: none; padding: 0;
 }
 .chatbox input:disabled { opacity: 1; -webkit-text-fill-color: currentColor; }
 
-/* ảnh chờ gửi (I1) */
-.attach { position: relative; width: 64px; height: 64px; margin: 0 0 16px; opacity: 0; transform: translateY(8px) scale(.96); transition: opacity .25s ease, transform .35s var(--ease-ios); }
-.attach.in { opacity: 1; transform: none; }
-.attach[hidden] { display: none; }
-.attach img { width: 64px; height: 64px; border-radius: 12px; object-fit: cover; object-position: top; display: block; box-shadow: 0 2px 12px rgba(0,0,0,.08); }
-.attach-x { position: absolute; top: -6px; right: -6px; width: 20px; height: 20px; border-radius: 50%; background: #fff; display: grid; place-items: center; box-shadow: 0 1px 4px rgba(0,0,0,.15); }
-.attach-x svg { width: 16px; height: 16px; display: block; }
-
 /* bubble ảnh + bubble nhiều dòng của người dùng */
 .uimg { width: 160px; height: 220px; border-radius: 16px; overflow: hidden; display: block; box-shadow: 0 2px 12px rgba(0,0,0,.06); }
 .uimg img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
