@@ -46,8 +46,8 @@
   };
   const PICKER = ['mb', 'vietinbank', 'sacombank', 'bidv', 'techcombank', 'vcb', 'vpbank'];
   const SOURCES = [
-    { id: 'vtp', name: 'ViettelPay', desc: 'Số dư 5.000.000đ', balance: 5000000, logo: 'assets/vtm.svg' },
-    { id: 'mbl', name: 'MB Bank ·· 6789', desc: 'Tài khoản liên kết · Số dư 25.000.000đ', balance: 25000000, logo: 'assets/mb.png' },
+    { id: 'vtp', name: 'ViettelPay', desc: 'Số dư 12.350.000đ', balance: 12350000, logo: 'assets/viettelpay.png' },
+    { id: 'mm', name: 'Tiền di động', desc: 'Số dư 5.000.000đ', balance: 5000000, logo: 'assets/mobile-money.png' },
   ];
   // Lịch sử giao dịch (theo dãy số)
   const HISTORY = {
@@ -661,7 +661,8 @@
   function openSrcSheet() {
     if (!['askAmount', 'confirm'].includes(st.phase)) return;
     const list = $('#srcList');
-    list.innerHTML = SOURCES.map(s => `<button class="bs-row" data-src="${s.id}"><span class="bs-logo"><img src="${s.logo}" alt=""></span><span class="bs-text"><span class="bs-name">${s.name}</span><span class="bs-full">${s.desc}</span></span>${s.id === st.src.id ? '<span style="color:#EE0033;font-weight:700">✓</span>' : ICONS.arrow}</button>`).join('');
+    const tick = '<svg class="src-tick" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#EE0033"/><path d="M7.5 12.2l3 3 6-6.2" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    list.innerHTML = SOURCES.map(s => `<button class="bs-row src-row" data-src="${s.id}"><img class="src-logo" src="${s.logo}" alt=""><span class="bs-text"><span class="bs-name">${s.name}</span><span class="src-bal">${fmtMoney(s.balance)}</span></span>${s.id === st.src.id ? tick : ''}${ICONS.arrow}</button>`).join('');
     $$('.bs-row', list).forEach(b => b.addEventListener('click', () => run(() => chooseSource(b.dataset.src))));
     openSheet('#srcSheet');
   }

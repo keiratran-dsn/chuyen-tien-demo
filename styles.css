@@ -498,3 +498,13 @@ button { font: inherit; color: inherit; border: 0; background: none; padding: 0;
 .tt { flex: 1; height: 30px; border-radius: 8px; font-size: 12px; font-weight: 600; color: #B9B3C6; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.06); }
 .tt.on { color: #fff; background: rgba(238,0,51,.18); border-color: rgba(255,90,120,.5); }
 .try code { white-space: normal; }
+
+/* sheet nguồn tiền theo Figma */
+.src-head { border-bottom: 1px solid #E9E9E9; }
+.src-sheet .bs-list { padding-top: 4px; }
+.src-row { gap: 16px; padding: 16px 0; border-bottom: 1px solid #F0F0F0; }
+.src-logo { width: 48px; height: 48px; flex: 0 0 48px; display: block; }
+.src-bal { font-size: 14px; line-height: 18px; color: #EE0033; }
+.src-tick { flex: 0 0 24px; display: block; }
+.src-row > svg:last-child { flex: 0 0 16px; opacity: .45; }
+.src-row > svg.src-tick { opacity: 1; width: 24px; height: 24px; flex: 0 0 24px; }
