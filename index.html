@@ -178,6 +178,7 @@
           </div>
 
           <div class="t-dock" id="tDock">
+            <div class="attach" id="attach" hidden><img id="attachImg" alt=""><button class="attach-x" id="attachX" aria-label="Bỏ ảnh"><span data-icon="close"></span></button></div>
             <div class="chips" id="chips"></div>
             <div class="reply-bar" id="replyBar">
               <span data-icon="edit"></span><span id="replyLabel">Chỉnh sửa nội dung</span>
@@ -222,6 +223,22 @@
             <div class="bs-head src-head"><button class="bs-close" id="srcClose" hidden>Đóng</button><div class="bs-title">Nguồn tiền</div></div>
             <div class="bs-list" id="srcList"></div>
           </div>
+          <!-- Thư viện ảnh (Tải ảnh) -->
+          <div class="src-sheet gal-sheet" id="galSheet" aria-hidden="true">
+            <div class="bs-handle"></div>
+            <div class="bs-head"><button class="bs-close" id="galClose">Huỷ</button><div class="bs-title">Ảnh</div></div>
+            <div class="gal-grid" id="galGrid"></div>
+          </div>
+          <!-- Camera (Chụp ảnh) -->
+          <div class="cam" id="cam" aria-hidden="true">
+            <div class="cam-view"><img src="assets/ai-kofuku.jpg" alt=""><i class="cam-frame"></i></div>
+            <div class="cam-hint">Đưa thông tin chuyển tiền vào khung hình</div>
+            <div class="cam-bar"><button class="cam-cancel" id="camCancel">Huỷ</button><button class="cam-shot" id="camShot" aria-label="Chụp"></button><span></span></div>
+          </div>
+          <!-- Xem ảnh toàn màn hình -->
+          <div class="viewer" id="viewer"><img alt=""></div>
+          <!-- Hộp thoại quyền hệ thống -->
+          <div class="sys-alert" id="sysAlert"></div>
           <!-- Xác nhận chuyển tiền (Gate 9) -->
           <div class="confirm-layer" id="confirmLayer" aria-hidden="true">
             <div class="status status-light" data-icon="status"></div>

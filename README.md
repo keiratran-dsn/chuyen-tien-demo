@@ -46,3 +46,19 @@ Panel bên trái có tab **Gõ chữ / tên** để bấm thử nhanh.
 | `Nguyễn Văn A 19033456789` | Chữ + số → ưu tiên STK → thẻ thông tin |
 | `Minh 0912345678 0451000456789` | 2 dãy số → hỏi chuyển đến số nào |
 | `chuyển 200k cho Vy` | Tách số tiền + tên → chọn Vy nào → tự điền 200.000đ, vào thẳng block xác nhận |
+
+## Dán / Tải ảnh / Chụp ảnh (AI)
+
+Theo section Figma `3 · Dán / Tải ảnh / Chụp ảnh (AI) - Luồng chi tiết` (node 158:12163).
+
+- **Dán**: lần đầu hỏi quyền dán (giả lập iOS) → nội dung mẫu vào ô chat → gửi. Dán bằng thao tác hệ thống (Cmd/Ctrl+V) với đoạn dài cũng đi luồng AI.
+- **Tải ảnh**: mở thư viện ảnh mẫu → ảnh nằm trên ô chat (✕ để bỏ), có thể thêm ghi chú → gửi.
+- **Chụp ảnh**: lần đầu hỏi quyền Camera → khung chụp → ảnh nằm trên ô chat → gửi.
+- Khi AI đọc: ô chat phát sáng xanh tím, placeholder “AI đang đọc thông tin chuyển tiền…”. Kết quả trả về dạng tin nhắn trong chat:
+  - đủ STK + ngân hàng + số tiền → block xác nhận;
+  - thiếu số tiền → thẻ Thông tin chuyển tiền + hỏi số tiền;
+  - thiếu ngân hàng → hỏi ngân hàng (giữ số tiền đã đọc);
+  - thiếu người nhận → hỏi người nhận;
+  - không đọc được → tin nhắn hướng dẫn, chip vẫn ở dưới để thử lại.
+- Tên người nhận lấy từ tra cứu, không lấy tên trong văn bản/ảnh.
+- Thử nhanh: tab **Dán / Ảnh (AI)** trong “Thử nhanh các case”.

@@ -291,7 +291,7 @@
       ? [['Sửa số tiền', null, () => startEdit('amount')], ['Sửa nội dung', null, () => startEdit('content')], ['Sửa nguồn tiền', null, openSrcSheet]]
       : mode === 'done'
       ? [['Thực hiện lại', null, () => run(redoTransfer)], ['Chuyển tiền mới', null, () => run(newTransfer)]]
-      : [['Dán', 'copy', pasteClipboard], ['Tải ảnh', 'album', () => toast('Tải ảnh: luồng bóc tách ảnh chưa có trong bản demo này.')], ['Chụp ảnh', 'camera', () => toast('Chụp ảnh: luồng bóc tách ảnh chưa có trong bản demo này.')]];
+      : [['Dán', 'copy', pasteClipboard], ['Tải ảnh', 'album', openGallery], ['Chụp ảnh', 'camera', openCamera]];
     defs.forEach(([label, icon, fn], i) => {
       const b = el(`<button class="chip${icon ? '' : ' edit-chip'}">${icon ? `<span>${ICONS[icon]}</span>` : ''}${label}</button>`);
       b.addEventListener('click', fn); chipsEl.appendChild(b);
@@ -299,9 +299,176 @@
     });
     updateInset();
   }
-  async function pasteClipboard() {
-    try { const t = await navigator.clipboard.readText(); if (t) { input.value = t; syncHasText(); input.focus(); return; } } catch (e) { /* ignore */ }
-    toast('Không đọc được bộ nhớ tạm. Bạn gõ trực tiếp vào ô chat nhé.');
+  // ================= DÁN / TẢI ẢNH / CHỤP ẢNH (AI) =================
+  const AI_TEXT = {
+    full: 'Kofuku cần nhận thanh toán trước 100% ạ, phiền bạn thanh toán vào:\nNgân hàng MB Bank: 818108888\nChủ tài khoản: VUONG VAN DAT\nSố tiền: 100k\nNội dung: tên FB/IG của bạn',
+    noAmount: 'Ngân hàng MB Bank: 818108888\nChủ tài khoản: VUONG VAN DAT',
+    noBank: 'Chuyển giúp mình 250k vào STK 0451000456789 nhé, cảm ơn bạn',
+    none: 'Tối nay 7h họp lớp ở quán cũ nha mọi người, nhớ đến đúng giờ!',
+  };
+  // Ảnh mẫu: kết quả AI đọc được (prototype không đọc ảnh thật)
+  const AI_IMAGES = {
+    kofuku: { src: 'assets/ai-kofuku.jpg', read: { acct: '818108888', bank: 'mb', amount: null } },
+    blur: { src: 'assets/ai-blur.jpg', read: null },
+  };
+  const AI_LOOKUP = { '818108888': 'VUONG VAN DAT' };
+  let aiPasteKey = 'full', pasteBuf = null, attachKey = null, permPaste = false, permCam = false;
+  const flat = t => t.replace(/\s*\n\s*/g, ' ').trim();
+
+  // ---------- quyền hệ thống (giả lập iOS) ----------
+  function sysAlert(title, text, btns) {
+    return new Promise(res => {
+      const box = $('#sysAlert');
+      box.innerHTML = `<div class="sys-box"><div class="sys-text"><b>${esc(title)}</b><p>${esc(text)}</p></div><div class="sys-btns${btns.some(b => b.length > 12) ? ' stack' : ''}">${btns.map((b, i) => `<button data-i="${i}"${i === btns.length - 1 ? ' class="em"' : ''}>${esc(b)}</button>`).join('')}</div></div>`;
+      box.classList.add('open');
+      $$('button', box).forEach(b => b.addEventListener('click', () => { box.classList.remove('open'); res(+b.dataset.i); }));
+    });
+  }
+
+  // ---------- Dán ----------
+  async function pasteClipboard(skipPerm) {
+    if (st.phase === 'busy' || coachStep) return;
+    if (!permPaste && skipPerm !== true) {
+      const ok = await sysAlert('“Viettel Money” muốn dán nội dung từ ứng dụng khác', 'Bạn có muốn cho phép dán không?', ['Không cho phép dán', 'Cho phép dán']);
+      if (!ok) return;
+      permPaste = true;
+    }
+    clearAttach();
+    pasteBuf = AI_TEXT[aiPasteKey];
+    input.value = flat(pasteBuf); syncHasText();
+    input.focus({ preventScroll: true });
+    input.setSelectionRange(0, 0); input.scrollLeft = 0;
+  }
+  // Dán bằng thao tác hệ thống (Cmd/Ctrl+V, giữ để dán) — giữ nguyên xuống dòng cho bubble
+  function onNativePaste(e) {
+    const t = (e.clipboardData || window.clipboardData).getData('text');
+    if (!t || (t.length < 30 && !t.includes('\n'))) return;
+    e.preventDefault();
+    clearAttach();
+    pasteBuf = t; input.value = flat(t); syncHasText();
+  }
+
+  // ---------- Tải ảnh ----------
+  function openGallery() {
+    if (st.phase === 'busy' || coachStep) return;
+    closeKb();
+    $('#galGrid').innerHTML = Object.entries(AI_IMAGES).map(([k, v]) => `<button class="gal-item" data-img="${k}"><img src="${v.src}" alt=""></button>`).join('');
+    $$('.gal-item').forEach(b => b.addEventListener('click', () => { closeSheets(); setAttach(b.dataset.img); }));
+    openSheet('#galSheet');
+  }
+  // ---------- Chụp ảnh ----------
+  async function openCamera() {
+    if (st.phase === 'busy' || coachStep) return;
+    closeKb();
+    if (!permCam) {
+      const ok = await sysAlert('“Viettel Money” muốn truy cập Camera', 'Dùng camera để chụp thông tin chuyển tiền, ví dụ tin nhắn hoặc hoá đơn.', ['Không cho phép', 'OK']);
+      if (!ok) { toast('Bạn cần cho phép truy cập Camera để chụp ảnh.'); return; }
+      permCam = true;
+    }
+    $('#cam').classList.add('open');
+  }
+  function closeCamera() { $('#cam').classList.remove('open'); }
+  function shoot() {
+    const cam = $('#cam'); cam.classList.add('flash');
+    setTimeout(() => { cam.classList.remove('flash', 'open'); setAttach('kofuku'); }, 260);
+  }
+
+  // ---------- ảnh chờ gửi (I1) ----------
+  function setAttach(key) {
+    if (pasteBuf && flat(pasteBuf) === input.value.trim()) input.value = '';
+    attachKey = key; pasteBuf = null;
+    const a = $('#attach'); $('#attachImg').src = AI_IMAGES[key].src;
+    a.hidden = false; requestAnimationFrame(() => a.classList.add('in'));
+    chatbox.classList.add('has-text');
+    if (!st.edit) input.placeholder = 'Thêm ghi chú (không bắt buộc)';
+    updateInset(); scrollBottom();
+  }
+  function clearAttach() {
+    if (!attachKey) return;
+    attachKey = null;
+    const a = $('#attach'); a.classList.remove('in'); a.hidden = true;
+    syncHasText(); if (!st.edit) input.placeholder = PH[st.phase] || PH.idle;
+    updateInset();
+  }
+
+  // ---------- bubble người dùng ----------
+  function addUserImage(key) {
+    const n = el(`<div class="user anim"><button class="uimg" aria-label="Xem ảnh"><img src="${AI_IMAGES[key].src}" alt=""></button></div>`);
+    $('.uimg', n).addEventListener('click', () => openViewer(AI_IMAGES[key].src));
+    return append(n);
+  }
+  function addUserMulti(text) {
+    const n = addUser(text); n.querySelector('.ububble').classList.add('multi'); return n;
+  }
+  function openViewer(src) { const v = $('#viewer'); $('img', v).src = src; v.classList.add('open'); }
+
+  // ---------- ô chat phát sáng khi AI đang đọc ----------
+  function aiGlow(on) {
+    chatbox.classList.toggle('ai-reading', on);
+    input.disabled = on;
+    input.placeholder = on ? 'AI đang đọc thông tin chuyển tiền…' : (PH[st.phase] || PH.idle);
+  }
+
+  // ---------- bóc tách văn bản ----------
+  function aiParse(text) {
+    const q = ' ' + norm(text).replace(/[^a-z0-9%]+/g, ' ') + ' ';
+    const keys = Object.keys(BANKS).filter(k => k !== 'vtm');
+    const bank = keys.find(k => BANKS[k].alias.some(a => q.includes(` ${a} `))) || null;
+    const runs = extractDigitRuns(text).filter(d => d.length >= 8 && d.length <= 19);
+    const acct = runs.sort((a, b) => b.length - a.length)[0] || null;
+    let amount = null;
+    const nq = norm(text);
+    const m = nq.match(/(?:so tien|st)\s*[:\-]?\s*([\d.,]+\s*(?:k|nghin|ngan|tr|trieu|d|dong|vnd)?)/) || nq.match(/(\d+(?:[.,]\d+)?\s*(?:k|nghin|ngan|tr|trieu|cu|d|dong|vnd))(?![a-z])/);
+    if (m) amount = parseAmount(m[1].trim());
+    return { acct, bank, amount };
+  }
+
+  async function aiRead({ text, img, note }) {
+    const w = guard();
+    if (st.edit) cancelEdit();
+    closeKb(); closeSheets(); hideBlocks();
+    st.rec = null; st.lookup = null; st.amount = null; st.keep = null; st.scope = null; st.pending = null;
+    const userEl = img ? addUserImage(img) : addUserMulti(text);
+    if (img && note) addUser(note);
+    setPhase('busy'); setChips('input'); aiGlow(true);
+    await w(img ? 2600 : 2000);
+    aiGlow(false);
+    let r = img ? (AI_IMAGES[img].read && { ...AI_IMAGES[img].read }) : aiParse(text);
+    if (img && note) { const n = aiParse(note); r = r ? { acct: r.acct || n.acct, bank: r.bank || n.bank, amount: r.amount || n.amount } : (n.acct || n.bank || n.amount ? n : null); }
+    const src = img ? 'ảnh' : 'nội dung';
+    if (!r || (!r.acct && !r.bank && !r.amount)) {
+      await botSay(img
+        ? 'AI chưa đọc được thông tin chuyển tiền từ ảnh này. Bạn thử ảnh rõ nét hơn, hoặc nhập tên, số tài khoản, số thẻ, số điện thoại người nhận nhé.'
+        : 'AI chưa đọc được thông tin chuyển tiền từ nội dung này. Bạn thử dán nội dung khác, hoặc nhập tên, số tài khoản, số thẻ, số điện thoại người nhận nhé.', 300);
+      setPhase('idle'); return;
+    }
+    const amt = r.amount && !amountError(r.amount) ? r.amount : null;
+    // Luồng 1/2 (đủ) + Luồng 3 · M1 (thiếu số tiền): tên người nhận lấy từ tra cứu
+    if (r.acct && r.bank) {
+      const rec = { name: AI_LOOKUP[r.acct] || fakeName(r.acct + r.bank), bank: r.bank, acct: r.acct, kind: 'acct' };
+      if (amt) {
+        await botSay(`AI đã đọc ${img ? 'ảnh ' : ''}và điền thông tin giúp bạn, bạn kiểm tra lại nhé.`, 300);
+        st.rec = rec; st.content = `${SENDER} chuyen tien`; st.amount = amt;
+        return showConfirmBlock();
+      }
+      await botSay(`AI đã đọc ${img ? 'ảnh ' : ''}và điền thông tin giúp bạn.`, 300);
+      return showInfo(rec);
+    }
+    // Thiếu ngân hàng → hỏi ngân hàng như luồng gõ dãy số
+    if (r.acct) {
+      await botSay(`AI đọc được số ${r.acct}${amt ? ` và số tiền ${fmtMoney(amt)}` : ''} từ ${src} của bạn.`, 300);
+      if (amt) st.keep = { amount: amt, content: null };
+      return lookup(r.acct, r.acct, userEl);
+    }
+    // Thiếu người nhận → hỏi người nhận
+    if (amt) st.keep = { amount: amt, content: null };
+    if (r.bank) {
+      st.scope = r.bank;
+      await botSay(`AI đọc được ngân hàng ${BANKS[r.bank].name}${amt ? ` và số tiền ${fmtMoney(amt)}` : ''} nhưng chưa thấy người nhận. Bạn nhập số tài khoản hoặc số thẻ của người nhận ở ${BANKS[r.bank].name} nhé.`, 300);
+      setPhase('askRec'); input.placeholder = 'Nhập số tài khoản, số thẻ'; return;
+    }
+    await botSay(`AI đọc được số tiền ${fmtMoney(amt || r.amount)} nhưng chưa thấy người nhận. Bạn muốn chuyển cho ai? Nhập tên, số điện thoại hoặc số tài khoản nhé.`, 300);
+    setPhase('idle');
   }
 
   // ================= LUỒNG GÕ DÃY SỐ =================
@@ -309,7 +476,19 @@
   function send() {
     if (composing) { pendingSend = true; input.blur(); return; }
     const text = input.value.trim();
-    if (!text || coachStep) return;
+    if (coachStep) return;
+    if (attachKey) {
+      if (st.phase === 'busy') return;
+      const img = attachKey; clearAttach(); clearInput();
+      return run(() => aiRead({ img, note: text }));
+    }
+    if (pasteBuf && text && flat(pasteBuf) === text) {
+      if (st.phase === 'busy') return;
+      const full = pasteBuf; pasteBuf = null; clearInput();
+      return run(() => aiRead({ text: full }));
+    }
+    pasteBuf = null;
+    if (!text) return;
     lastSent = { text, at: Date.now() };
     clearInput();
     run(() => handle(text));
@@ -807,6 +986,8 @@
     tContent.innerHTML = '';
     chipsEl.innerHTML = '';
     chatbox.classList.remove('in');
+    pasteBuf = null; clearAttach(); aiGlow(false); closeCamera();
+    $('#viewer').classList.remove('open'); $('#sysAlert').classList.remove('open');
     input.value = ''; syncHasText(); setPhase('idle');
   }
 
@@ -937,17 +1118,36 @@
     insertText(shiftOn ? key.toUpperCase() : key);
     if (shiftOn) { shiftOn = false; buildKeyboard(); }
   }
-  function syncHasText() { chatbox.classList.toggle('has-text', !!input.value.trim()); }
+  function syncHasText() { chatbox.classList.toggle('has-text', !!input.value.trim() || !!attachKey); }
 
   // ================= THỬ NHANH =================
   let triesTab = 'num';
+  const TRIES_AI = [
+    ['Dán · đủ thông tin', 'STK + ngân hàng + số tiền → xác nhận luôn', () => { aiPasteKey = 'full'; pasteClipboard(true); }],
+    ['Dán · thiếu số tiền', 'STK + ngân hàng → hỏi số tiền', () => { aiPasteKey = 'noAmount'; pasteClipboard(true); }],
+    ['Dán · thiếu ngân hàng', 'STK + số tiền → hỏi ngân hàng', () => { aiPasteKey = 'noBank'; pasteClipboard(true); }],
+    ['Dán · không có thông tin', 'AI không đọc được', () => { aiPasteKey = 'none'; pasteClipboard(true); }],
+    ['Ảnh · tin nhắn chuyển khoản', 'Ảnh có STK + ngân hàng → hỏi số tiền', () => setAttach('kofuku')],
+    ['Ảnh · bị mờ', 'AI không đọc được ảnh', () => setAttach('blur')],
+  ];
   function renderTries() {
-    const list = triesTab === 'num' ? TRIES : TRIES_TEXT;
-    const tabs = `<div class="tries-tabs"><button class="tt${triesTab === 'num' ? ' on' : ''}" data-tab="num">Gõ dãy số</button><button class="tt${triesTab === 'text' ? ' on' : ''}" data-tab="text">Gõ chữ / tên</button></div>`;
-    const html = tabs + list.map(([n, d]) => `<button class="try" data-n="${esc(n)}"><code>${esc(n)}</code><span>${d}</span></button>`).join('');
+    const list = triesTab === 'num' ? TRIES : triesTab === 'text' ? TRIES_TEXT : TRIES_AI;
+    const tabs = `<div class="tries-tabs"><button class="tt${triesTab === 'num' ? ' on' : ''}" data-tab="num">Gõ dãy số</button><button class="tt${triesTab === 'text' ? ' on' : ''}" data-tab="text">Gõ chữ / tên</button><button class="tt${triesTab === 'ai' ? ' on' : ''}" data-tab="ai">Dán / Ảnh (AI)</button></div>`;
+    const html = tabs + list.map(([n, d], i) => `<button class="try" data-n="${esc(n)}" data-i="${i}"><code>${esc(n)}</code><span>${d}</span></button>`).join('');
     ['#triesList', '#triesListM'].forEach(id => { const x = $(id); if (x) x.innerHTML = html; });
-    $$('.try').forEach(b => b.addEventListener('click', () => tryNumber(b.dataset.n)));
+    $$('.try').forEach(b => b.addEventListener('click', () => triesTab === 'ai' ? tryAi(TRIES_AI[+b.dataset.i][2]) : tryNumber(b.dataset.n)));
     $$('.tt').forEach(b => b.addEventListener('click', () => { triesTab = b.dataset.tab; renderTries(); }));
+  }
+  async function tryAi(fn) {
+    $('#mSheet').classList.remove('open');
+    if (!navOpen) { skipCoach = true; openTransfer(); await sleep(2100); }
+    if (coachStep) hideCoach();
+    if (st.edit) cancelEdit();
+    closeSheets(); closeConfirm(); closeCamera();
+    for (let i = 0; i < 40 && st.phase === 'busy'; i++) await sleep(150);
+    input.value = ''; syncHasText();
+    fn(); await sleep(700);
+    send();
   }
   async function tryNumber(n) {
     $('#mSheet').classList.remove('open');
@@ -998,6 +1198,12 @@
 
     // composer
     input.addEventListener('focus', openKb);
+    input.addEventListener('paste', onNativePaste);
+    $('#attachX').addEventListener('click', () => { clearAttach(); });
+    $('#galClose').addEventListener('click', closeSheets);
+    $('#camCancel').addEventListener('click', closeCamera);
+    $('#camShot').addEventListener('click', shoot);
+    $('#viewer').addEventListener('click', () => $('#viewer').classList.remove('open'));
     input.addEventListener('input', () => {
       // Bộ gõ tiếng Việt đôi khi gõ lại phần chữ vừa gửi ngay sau khi ô đã được xoá → bỏ phần thừa đó
       if (lastSent.text && Date.now() - lastSent.at < 400 && input.value.trim() && lastSent.text.endsWith(input.value.trim())) { input.value = ''; }
