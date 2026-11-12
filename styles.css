@@ -512,16 +512,22 @@ button { font: inherit; color: inherit; border: 0; background: none; padding: 0;
 /* ===================== Dán / Tải ảnh / Chụp ảnh (AI) ===================== */
 /* ô chat phát sáng xanh tím khi AI đang đọc */
 .chatbox.ai-reading {
+  position: relative;
   border: 1.5px solid transparent;
-  background: linear-gradient(#fff, #fff) padding-box, linear-gradient(90deg, #6788FF 0%, #FD5CEA 100%) border-box;
-  animation: aiGlow 1.6s ease-in-out infinite alternate;
+  background: linear-gradient(#fff, #fff) padding-box, linear-gradient(90deg, #6788FF, #FD5CEA, #6788FF) border-box;
+  background-size: 100% 100%, 200% 100%;
+  box-shadow: 0 4px 20px rgba(151,143,191,.2);
+  animation: aiBorder 1.6s linear infinite;
 }
-.chatbox.ai-reading input::placeholder { color: var(--sub); }
+/* quầng sáng xanh tím nhấp nháy quanh ô chat */
+.chatbox.ai-reading::before {
+  content: ''; position: absolute; inset: -2px; border-radius: inherit; z-index: -1; pointer-events: none;
+  box-shadow: -8px 0 24px rgba(103,136,255,.75), 8px 0 24px rgba(253,92,234,.7), 0 0 12px rgba(160,120,255,.5);
+  animation: aiPulse 1s ease-in-out infinite alternate;
+}
 .chatbox.ai-reading .send-btn { opacity: .45; }
-@keyframes aiGlow {
-  from { box-shadow: 0 4px 20px rgba(151,143,191,.2), -8px 0 24px rgba(103,136,255,.30), 8px 0 24px rgba(253,92,234,.26); }
-  to   { box-shadow: 0 4px 20px rgba(151,143,191,.2), -8px 0 28px rgba(103,136,255,.55), 8px 0 28px rgba(253,92,234,.50); }
-}
+@keyframes aiPulse { from { opacity: .15; } to { opacity: 1; } }
+@keyframes aiBorder { from { background-position: 0 0, 0 0; } to { background-position: 0 0, 200% 0; } }
 .chatbox input:disabled { opacity: 1; -webkit-text-fill-color: currentColor; }
 
 /* bubble ảnh + bubble nhiều dòng của người dùng */
