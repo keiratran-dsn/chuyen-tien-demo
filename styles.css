@@ -511,23 +511,20 @@ button { font: inherit; color: inherit; border: 0; background: none; padding: 0;
 
 /* ===================== Dán / Tải ảnh / Chụp ảnh (AI) ===================== */
 /* ô chat phát sáng xanh tím khi AI đang đọc */
-.chatbox.ai-reading {
-  position: relative;
-  border: 1.5px solid transparent;
-  background: linear-gradient(#fff, #fff) padding-box, linear-gradient(90deg, #6788FF, #FD5CEA, #6788FF) border-box;
-  background-size: 100% 100%, 200% 100%;
-  box-shadow: 0 4px 20px rgba(151,143,191,.2);
+/* bubble “…” của hệ thống phát sáng xanh tím, nhấp nháy khi AI đang đọc */
+.bot.ai-typing .bubble-box { position: relative; animation: aiPulse 1s ease-in-out infinite alternate; }
+.bot.ai-typing .bubble-box::after {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 2px; pointer-events: none;
+  background: linear-gradient(90deg, #6788FF, #FD5CEA, #6788FF); background-size: 200% 100%;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
   animation: aiBorder 1.6s linear infinite;
 }
-/* quầng sáng xanh tím nhấp nháy quanh ô chat */
-.chatbox.ai-reading::before {
-  content: ''; position: absolute; inset: -2px; border-radius: inherit; z-index: -1; pointer-events: none;
-  box-shadow: -8px 0 24px rgba(103,136,255,.75), 8px 0 24px rgba(253,92,234,.7), 0 0 12px rgba(160,120,255,.5);
-  animation: aiPulse 1s ease-in-out infinite alternate;
+@keyframes aiPulse {
+  from { box-shadow: 0 2px 12px rgba(0,0,0,.04), -8px 0 24px rgba(103,136,255,.12), 8px 0 24px rgba(253,92,234,.1); }
+  to   { box-shadow: 0 2px 12px rgba(0,0,0,.04), -8px 0 24px rgba(103,136,255,.6), 8px 0 24px rgba(253,92,234,.55); }
 }
-.chatbox.ai-reading .send-btn { opacity: .45; }
-@keyframes aiPulse { from { opacity: .15; } to { opacity: 1; } }
-@keyframes aiBorder { from { background-position: 0 0, 0 0; } to { background-position: 0 0, 200% 0; } }
+@keyframes aiBorder { from { background-position: 0 0; } to { background-position: 200% 0; } }
 .chatbox input:disabled { opacity: 1; -webkit-text-fill-color: currentColor; }
 
 /* bubble ảnh + bubble nhiều dòng của người dùng */

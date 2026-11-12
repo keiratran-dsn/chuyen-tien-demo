@@ -426,13 +426,19 @@
     closeKb(); closeSheets(); hideBlocks();
     st.rec = null; st.lookup = null; st.amount = null; st.keep = null; st.scope = null; st.pending = null;
     const userEl = img ? addUserImage(img) : addUserMulti(text);
-    setPhase('busy'); setChips('input'); aiGlow(true);
+    setPhase('busy'); setChips('input');
+    // Hệ thống gửi bubble “…” có quầng sáng xanh tím trong lúc AI đọc
+    const t = addTyping(); t.classList.add('ai-typing');
+    let first = true;
+    const say = async (msg, ms) => {
+      if (!first) return botSay(msg, ms);
+      first = false; t.classList.remove('ai-typing'); toText(t, msg); await w(420);
+    };
     await w(img ? 2600 : 2000);
-    aiGlow(false);
     let r = img ? (AI_IMAGES[img].read && { ...AI_IMAGES[img].read }) : aiParse(text);
     const src = img ? 'ảnh' : 'nội dung';
     if (!r || (!r.acct && !r.bank && !r.amount)) {
-      await botSay(img
+      await say(img
         ? 'AI chưa đọc được thông tin chuyển tiền từ ảnh này. Bạn thử ảnh rõ nét hơn, hoặc nhập tên, số tài khoản, số thẻ, số điện thoại người nhận nhé.'
         : 'AI chưa đọc được thông tin chuyển tiền từ nội dung này. Bạn thử dán nội dung khác, hoặc nhập tên, số tài khoản, số thẻ, số điện thoại người nhận nhé.', 300);
       setPhase('idle'); return;
@@ -442,16 +448,16 @@
     if (r.acct && r.bank) {
       const rec = { name: AI_LOOKUP[r.acct] || fakeName(r.acct + r.bank), bank: r.bank, acct: r.acct, kind: 'acct' };
       if (amt) {
-        await botSay(`AI đã đọc ${img ? 'ảnh ' : ''}và điền thông tin giúp bạn, bạn kiểm tra lại nhé.`, 300);
+        await say(`AI đã đọc ${img ? 'ảnh ' : ''}và điền thông tin giúp bạn, bạn kiểm tra lại nhé.`, 300);
         st.rec = rec; st.content = `${SENDER} chuyen tien`; st.amount = amt;
         return showConfirmBlock();
       }
-      await botSay(`AI đã đọc ${img ? 'ảnh ' : ''}và điền thông tin giúp bạn.`, 300);
+      await say(`AI đã đọc ${img ? 'ảnh ' : ''}và điền thông tin giúp bạn.`, 300);
       return showInfo(rec);
     }
     // Thiếu ngân hàng → hỏi ngân hàng như luồng gõ dãy số
     if (r.acct) {
-      await botSay(`AI đọc được số ${r.acct}${amt ? ` và số tiền ${fmtMoney(amt)}` : ''} từ ${src} của bạn.`, 300);
+      await say(`AI đọc được số ${r.acct}${amt ? ` và số tiền ${fmtMoney(amt)}` : ''} từ ${src} của bạn.`, 300);
       if (amt) st.keep = { amount: amt, content: null };
       return lookup(r.acct, r.acct, userEl);
     }
@@ -459,12 +465,12 @@
     if (amt) st.keep = { amount: amt, content: null };
     if (r.bank) {
       st.scope = r.bank;
-      await botSay(`AI đọc được ngân hàng ${BANKS[r.bank].name}${amt ? ` và số tiền ${fmtMoney(amt)}` : ''} nhưng chưa thấy người nhận.`, 300);
-      await botSay(`Bạn nhập số tài khoản hoặc số thẻ của người nhận ở ${BANKS[r.bank].name} nhé.`, 500);
+      await say(`AI đọc được ngân hàng ${BANKS[r.bank].name}${amt ? ` và số tiền ${fmtMoney(amt)}` : ''} nhưng chưa thấy người nhận.`, 300);
+      await say(`Bạn nhập số tài khoản hoặc số thẻ của người nhận ở ${BANKS[r.bank].name} nhé.`, 500);
       setPhase('askRec'); input.placeholder = 'Nhập số tài khoản, số thẻ'; return;
     }
-    await botSay(`AI đọc được số tiền ${fmtMoney(amt || r.amount)} nhưng chưa thấy người nhận.`, 300);
-    await botSay('Bạn muốn chuyển cho ai? Nhập tên, số điện thoại hoặc số tài khoản nhé.', 500);
+    await say(`AI đọc được số tiền ${fmtMoney(amt || r.amount)} nhưng chưa thấy người nhận.`, 300);
+    await say('Bạn muốn chuyển cho ai? Nhập tên, số điện thoại hoặc số tài khoản nhé.', 500);
     setPhase('idle');
   }
 
