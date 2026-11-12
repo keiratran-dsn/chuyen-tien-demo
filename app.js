@@ -326,11 +326,21 @@
     });
   }
 
+  // Pop-up xin quyền dán của iOS (theo ảnh chụp thật): 2 nút dạng pill xếp dọc
+  function pasteAlert() {
+    return new Promise(res => {
+      const box = $('#sysAlert');
+      box.innerHTML = `<div class="paste-box"><div class="paste-text"><b>“Viettel Money” muốn dán từ “Ghi chú”</b><p>Bạn có muốn cho phép việc này không?</p></div><div class="paste-btns"><button class="pb-allow" data-ok="1">Cho phép dán</button><button class="pb-deny" data-ok="0">Không cho phép dán</button></div></div>`;
+      box.classList.add('open', 'paste');
+      $$('button', box).forEach(b => b.addEventListener('click', () => { box.classList.remove('open'); setTimeout(() => box.classList.remove('paste'), 220); res(b.dataset.ok === '1'); }));
+    });
+  }
+
   // ---------- Dán ----------
   async function pasteClipboard(skipPerm) {
     if (st.phase === 'busy' || coachStep) return;
     if (!permPaste && skipPerm !== true) {
-      const ok = await sysAlert('“Viettel Money” muốn dán nội dung từ ứng dụng khác', 'Bạn có muốn cho phép dán không?', ['Không cho phép dán', 'Cho phép dán']);
+      const ok = await pasteAlert();
       if (!ok) return;
       permPaste = true;
     }
