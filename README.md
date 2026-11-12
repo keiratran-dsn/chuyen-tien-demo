@@ -58,7 +58,7 @@ Theo section Figma `3 · Dán / Tải ảnh / Chụp ảnh (AI) - Luồng chi ti
   - đủ STK + ngân hàng + số tiền → block xác nhận;
   - thiếu số tiền → thẻ Thông tin chuyển tiền + hỏi số tiền;
   - thiếu ngân hàng → hỏi ngân hàng (giữ số tiền đã đọc);
-  - thiếu người nhận → hỏi người nhận;
+  - thiếu người nhận → báo phần đã đọc được, hỏi STK/số thẻ ở ngân hàng đó (chỉ có số tiền thì hỏi người nhận);
   - không đọc được → tin nhắn hướng dẫn, chip vẫn ở dưới để thử lại.
 - Tên người nhận lấy từ tra cứu, không lấy tên trong văn bản/ảnh.
 - Thử nhanh: tab **Dán / Ảnh (AI)** trong “Thử nhanh các case”.

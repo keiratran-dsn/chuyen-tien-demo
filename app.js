@@ -304,6 +304,7 @@
     full: 'Kofuku cần nhận thanh toán trước 100% ạ, phiền bạn thanh toán vào:\nNgân hàng MB Bank: 818108888\nChủ tài khoản: VUONG VAN DAT\nSố tiền: 100k\nNội dung: tên FB/IG của bạn',
     noAmount: 'Ngân hàng MB Bank: 818108888\nChủ tài khoản: VUONG VAN DAT',
     noBank: 'Chuyển giúp mình 250k vào STK 0451000456789 nhé, cảm ơn bạn',
+    noRec: 'Chuyển 500k vào Vietcombank giúp mình nha',
     none: 'Tối nay 7h họp lớp ở quán cũ nha mọi người, nhớ đến đúng giờ!',
   };
   // Ảnh mẫu: kết quả AI đọc được (prototype không đọc ảnh thật)
@@ -464,10 +465,12 @@
     if (amt) st.keep = { amount: amt, content: null };
     if (r.bank) {
       st.scope = r.bank;
-      await botSay(`AI đọc được ngân hàng ${BANKS[r.bank].name}${amt ? ` và số tiền ${fmtMoney(amt)}` : ''} nhưng chưa thấy người nhận. Bạn nhập số tài khoản hoặc số thẻ của người nhận ở ${BANKS[r.bank].name} nhé.`, 300);
+      await botSay(`AI đọc được ngân hàng ${BANKS[r.bank].name}${amt ? ` và số tiền ${fmtMoney(amt)}` : ''} nhưng chưa thấy người nhận.`, 300);
+      await botSay(`Bạn nhập số tài khoản hoặc số thẻ của người nhận ở ${BANKS[r.bank].name} nhé.`, 500);
       setPhase('askRec'); input.placeholder = 'Nhập số tài khoản, số thẻ'; return;
     }
-    await botSay(`AI đọc được số tiền ${fmtMoney(amt || r.amount)} nhưng chưa thấy người nhận. Bạn muốn chuyển cho ai? Nhập tên, số điện thoại hoặc số tài khoản nhé.`, 300);
+    await botSay(`AI đọc được số tiền ${fmtMoney(amt || r.amount)} nhưng chưa thấy người nhận.`, 300);
+    await botSay('Bạn muốn chuyển cho ai? Nhập tên, số điện thoại hoặc số tài khoản nhé.', 500);
     setPhase('idle');
   }
 
@@ -1126,6 +1129,7 @@
     ['Dán · đủ thông tin', 'STK + ngân hàng + số tiền → xác nhận luôn', () => { aiPasteKey = 'full'; pasteClipboard(true); }],
     ['Dán · thiếu số tiền', 'STK + ngân hàng → hỏi số tiền', () => { aiPasteKey = 'noAmount'; pasteClipboard(true); }],
     ['Dán · thiếu ngân hàng', 'STK + số tiền → hỏi ngân hàng', () => { aiPasteKey = 'noBank'; pasteClipboard(true); }],
+    ['Dán · thiếu người nhận', 'Ngân hàng + số tiền → hỏi STK/số thẻ', () => { aiPasteKey = 'noRec'; pasteClipboard(true); }],
     ['Dán · không có thông tin', 'AI không đọc được', () => { aiPasteKey = 'none'; pasteClipboard(true); }],
     ['Ảnh · tin nhắn chuyển khoản', 'Ảnh có STK + ngân hàng → hỏi số tiền', () => setAttach('kofuku')],
     ['Ảnh · bị mờ', 'AI không đọc được ảnh', () => setAttach('blur')],
