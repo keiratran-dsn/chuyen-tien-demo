@@ -60,6 +60,21 @@
       { name: 'NGUYEN THI LINH', bank: 'bidv', acct: '0071000312345', kind: 'acct' },
     ],
   };
+  // Người nhận đã từng chuyển (tra theo tên)
+  const NAME_BOOK = [
+    { name: 'NGUYEN VAN A', bank: 'vtm', acct: '0912345678', kind: 'phone' },
+    { name: 'NGUYEN VAN A', bank: 'vcb', acct: '0071000312346', kind: 'acct' },
+    { name: 'NGUYEN VAN AN', bank: 'techcombank', acct: '19033456780', kind: 'acct' },
+    { name: 'TRAN THI HUONG', bank: 'mb', acct: '012345678899', kind: 'acct' },
+    { name: 'NGUYEN THI LINH', bank: 'vcb', acct: '0071000312345', kind: 'acct' },
+    { name: 'LE THI MAI', bank: 'vcb', acct: '0451000456789', kind: 'acct' },
+    { name: 'NGUYEN THUY VY', bank: 'vtm', acct: '0912888123', kind: 'phone' },
+    { name: 'TRAN THAO VY', bank: 'vcb', acct: '0451000678901', kind: 'acct' },
+    { name: 'LE HA VY', bank: 'techcombank', acct: '19034567890', kind: 'acct' },
+  ];
+  // Tài khoản định danh (STK dạng chữ) và STK tra ra được trực tiếp
+  const ALIAS_ACCTS = { tuanpham88: { name: 'PHAM ANH TUAN', bank: 'techcombank', acct: 'tuanpham88', kind: 'alias' } };
+  const KNOWN_ACCTS = { '19033456789': { name: 'NGUYEN VAN A', bank: 'techcombank', acct: '19033456789', kind: 'acct' } };
   const BIN = { '970436': 'vcb', '970407': 'techcombank', '970418': 'bidv', '970422': 'mb', '970415': 'vietinbank', '970403': 'sacombank', '970432': 'vpbank' };
   const NOT_EXIST = { acct: '21510000123457', bank: 'bidv' };
   const SLOW_NO = '21510000123456';
@@ -91,6 +106,18 @@
     ['21510000123457', 'Chọn BIDV → TK không tồn tại'],
     ['12345', 'Không ra kết quả'],
     ['21510000123456', 'Tra cứu quá lâu → gửi lại'],
+  ];
+  const TRIES_TEXT = [
+    ['Nguyễn Văn A', 'Tên khớp nhiều người'],
+    ['Trần Thị Hương', 'Tên khớp đúng 1 người'],
+    ['Vietcombank', 'Gõ tên ngân hàng → gõ tên người nhận'],
+    ['Phạm Minh Khôi', 'Tên không khớp ai → hỏi ngân hàng'],
+    ['dfgh ??? kk', 'Nhập linh tinh'],
+    ['nguyenvana', 'Liền không dấu — khớp tên'],
+    ['tuanpham88', 'Liền không dấu — khớp STK'],
+    ['Nguyễn Văn A 19033456789', 'Chữ + số — ưu tiên STK'],
+    ['Minh 0912345678 0451000456789', 'Chữ + số — mơ hồ'],
+    ['chuyển 200k cho Vy', 'Số tiền + tên'],
   ];
 
   // ================= TIỆN ÍCH =================
@@ -156,8 +183,8 @@
   function toast(msg) { toastEl.textContent = msg; toastEl.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => toastEl.classList.remove('show'), 2200); }
 
   // ================= TRẠNG THÁI HỘI THOẠI =================
-  const PH = { idle: 'Nhập/dán thông tin chuyển tiền', askBank: 'Nhập tên ngân hàng', askAmount: 'Nhập số tiền', confirm: 'Nhập/dán thông tin chuyển tiền', done: 'Nhập/dán thông tin chuyển tiền', busy: 'Nhập/dán thông tin chuyển tiền' };
-  const st = { gen: 0, phase: 'idle', lookup: null, rec: null, src: SOURCES[0], amount: null, content: null, edit: null, slowUsed: false, keep: null, pending: null };
+  const PH = { idle: 'Nhập/dán thông tin chuyển tiền', askBank: 'Nhập tên ngân hàng', askAmount: 'Nhập số tiền', askRec: 'Nhập tên hoặc số tài khoản', askPick: 'Nhập/dán thông tin chuyển tiền', confirm: 'Nhập/dán thông tin chuyển tiền', done: 'Nhập/dán thông tin chuyển tiền', busy: 'Nhập/dán thông tin chuyển tiền' };
+  const st = { gen: 0, phase: 'idle', lookup: null, rec: null, src: SOURCES[0], amount: null, content: null, edit: null, slowUsed: false, keep: null, pending: null, scope: null };
   function setPhase(p) {
     st.phase = p; if (!st.edit) input.placeholder = PH[p] || PH.idle;
     if (typeof setKbMode === 'function' && p !== 'busy' && !st.edit) setKbMode(p === 'askAmount' ? 'num' : 'abc');
@@ -206,11 +233,12 @@
   // ---------- block builders ----------
   const chev = ICONS.arrow;
   function recRow(r, extra = '') { return `<div class="row fade-row" ${extra}>${logo(r.bank)}<div class="row-text"><div class="row-name">${esc(r.name)}</div><div class="row-desc">${esc(r.listDesc || recDesc(r))}</div></div>${chev}</div>`; }
-  function listBlock(results, withChoose) {
+  function listBlock(results, withChoose, last) {
+    const label = last ? last.label : (results.length ? 'Ngân hàng khác' : 'Chọn ngân hàng');
     const n = el(`<div class="bot"><div class="glass list">${results.map((r, i) => (i ? '<div class="divider fade-row"></div>' : '') + recRow({ ...r, listDesc: r.bank === 'vtm' ? `${fmtPhoneDash(r.acct)} · Viettel Money` : `${r.acct} · ${BANKS[r.bank].name}` }, `data-i="${i}"`)).join('')}
-      ${withChoose ? `${results.length ? '<div class="divider fade-row"></div>' : ''}<div class="choose-row fade-row" data-choose>${results.length ? 'Ngân hàng khác' : 'Chọn ngân hàng'} ${chev}</div>` : ''}</div></div>`);
+      ${withChoose ? `${results.length ? '<div class="divider fade-row"></div>' : ''}<div class="choose-row fade-row" data-choose>${label} ${chev}</div>` : ''}</div></div>`);
     $$('.row[data-i]', n).forEach(row => row.addEventListener('click', () => { const r = results[+row.dataset.i]; pickRecipient(r, `${r.name} · ${BANKS[r.bank].name}`); }));
-    const ch = $('[data-choose]', n); if (ch) ch.addEventListener('click', openBankSheet);
+    const ch = $('[data-choose]', n); if (ch) ch.addEventListener('click', last ? last.fn : openBankSheet);
     return n;
   }
   function infoBlock() {
@@ -288,15 +316,140 @@
     if (st.phase === 'askSwitch') { addUser(text); return botSay(`Bạn chọn [Đổi người nhận] hoặc [Tiếp tục với ${st.rec.name}] giúp mình nhé.`); }
     if (['askAmount', 'confirm'].includes(st.phase) && st.rec && numeric && looksLikeRecipient(digits)) return askSwitch(digits, text);
     if (st.phase === 'askAmount') return handleAmount(text);
+    if (st.phase === 'askRec') return handleScoped(text, digits, numeric);
     if (st.phase === 'askBank' && !numeric) {
       const b = matchBank(text);
-      addUser(text);
-      if (b) return chooseBank(b, true);
-      return botSay(`Không tìm thấy ngân hàng “${text}”. Bạn chọn trong danh sách ngân hàng giúp mình nhé.`);
+      if (b) { addUser(text); return chooseBank(b, true); }
+      if (st.lookup) { addUser(text); return botSay(`Không tìm thấy ngân hàng “${text}”. Bạn chọn trong danh sách ngân hàng giúp mình nhé.`); }
+      return handleText(text);
     }
-    if (numeric) return lookup(digits, text);
+    if (numeric) { st.scope = null; return lookup(digits, text); }
+    return handleText(text);
+  }
+
+  // ================= LUỒNG GÕ CHỮ / TÊN =================
+  const VOWEL = /[aeiouy]/;
+  const looksLikeName = t => { const q = norm(t); if (!/^[a-z\s]+$/.test(q)) return false; const w = q.split(/\s+/).filter(Boolean); return w.length > 0 && w.length <= 5 && w.every(x => VOWEL.test(x) && x.length <= 12); };
+  function searchName(q, bank) {
+    const toks = norm(q).split(/\s+/).filter(Boolean);
+    const compact = norm(q).replace(/\s+/g, '');
+    return NAME_BOOK.filter(r => {
+      if (bank && r.bank !== bank) return false;
+      const nt = norm(r.name).split(/\s+/);
+      if (toks.length === 1 && compact.length > 6 && nt.join('') === compact) return true;
+      let j = 0;
+      for (const t of toks) { while (j < nt.length && !(nt[j] === t || (t === toks[toks.length - 1] && nt[j].startsWith(t)))) j++; if (j >= nt.length) return false; j++; }
+      return true;
+    });
+  }
+  function splitAmountName(text) {
+    const q = norm(text);
+    const m = q.match(/(\d+(?:[.,]\d+)?\s*(?:k|nghin|ngan|tr|trieu|cu|d|dong|vnd)\b)/);
+    if (!m) return null;
+    const amount = parseAmount(m[1]);
+    if (!amount) return null;
+    const rest = norm(text.replace(new RegExp(m[1].replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i'), ' ')).replace(/\b(chuyen khoan|chuyen tien|chuyen|gui|ck|cho|toi|den|giup|nhe|di)\b/g, ' ').replace(/\s+/g, ' ').trim();
+    // lấy lại tên theo đúng chữ người dùng gõ
+    const words = text.trim().split(/\s+/);
+    const name = words.filter(w => rest.split(' ').includes(norm(w))).join(' ');
+    return { amount, name };
+  }
+  // Tách các dãy số trong câu: “0912 345 678” là 1 số; “0912345678 0451000456789” là 2 số
+  function extractDigitRuns(text) {
+    const toks = text.trim().split(/\s+/), groups = []; let cur = [];
+    for (const t of toks) { const d = t.replace(/[.\-]/g, ''); if (/^\d+$/.test(d)) cur.push(d); else { if (cur.length) groups.push(cur); cur = []; } }
+    if (cur.length) groups.push(cur);
+    const runs = [];
+    for (const g of groups) { if (g.length > 1 && g.every(x => x.length >= 8)) runs.push(...g); else runs.push(g.join('')); }
+    return runs.filter(x => x.length >= 8);
+  }
+  async function askBankFor(text) {
+    const w = guard();
+    setPhase('busy');
+    const t = addTyping(); await w(750);
+    toText(t, st.keep && st.keep.amount ? `Bạn muốn chuyển ${fmtMoney(st.keep.amount)} đến ngân hàng nào?` : 'Bạn muốn chuyển tiền đến ngân hàng nào?');
+    await w(300);
+    addBlock(listBlock([], true));
+    st.lookup = null; setPhase('askBank');
+  }
+  async function showNameResults(results, question, scoped) {
+    const w = guard();
+    setPhase('busy');
+    const t = addTyping(); await w(800);
+    toText(t, question); await w(300);
+    const last = scoped ? { label: 'Nhập số tài khoản', fn: () => { input.placeholder = 'Nhập số tài khoản, số thẻ'; input.focus(); } } : null;
+    addBlock(listBlock(results, true, last));
+    st.lookup = null;
+    setPhase(scoped ? 'askRec' : 'askBank');
+  }
+  async function handleText(text) {
+    const userEl = addUser(text);
+    const digitRuns = extractDigitRuns(text);
+    // số tiền + tên: “chuyển 200k cho Vy”
+    const an = digitRuns.length ? null : splitAmountName(text);
+    if (an) {
+      const err = amountError(an.amount);
+      if (err) return botSay(err);
+      st.keep = { amount: an.amount, content: null };
+      if (!an.name) { st.scope = null; return botSay(`Mình ghi nhận ${fmtMoney(an.amount)}. Bạn muốn chuyển cho ai? Nhập tên, số điện thoại hoặc số tài khoản nhé.`); }
+      const res = searchName(an.name);
+      if (res.length) return showNameResults(res, `Bạn muốn chuyển ${fmtMoney(an.amount)} cho ${an.name} nào?`);
+      return askBankFor(text);
+    }
+    // chữ + số
+    if (digitRuns.length >= 2) {
+      const w = guard(); setPhase('busy');
+      const t = addTyping(); await w(700); toText(t, 'Bạn muốn chuyển đến số nào?'); await w(300);
+      const n = el(`<div class="bot"><div class="glass list">${digitRuns.map((d, i) => (i ? '<div class="divider fade-row"></div>' : '') + `<div class="row fade-row" data-d="${d}"><div class="row-text"><div class="row-name">${esc(fmtTyped(d))}</div><div class="row-desc">${isPhone(d) ? 'Số điện thoại' : isCard(d) ? 'Số thẻ' : 'Số tài khoản'}</div></div>${chev}</div>`).join('')}</div></div>`);
+      $$('.row', n).forEach(r => r.addEventListener('click', () => { if (st.phase !== 'askPick') return; const d = r.dataset.d; run(() => lookup(d, d)); }));
+      addBlock(n); setPhase('askPick'); return;
+    }
+    if (digitRuns.length === 1) {
+      const d = digitRuns[0];
+      if (KNOWN_ACCTS[d]) { const w = guard(); setPhase('busy'); const t = addTyping(); await w(800); t.remove(); return showInfo(KNOWN_ACCTS[d]); }
+      return lookup(d, text, userEl);
+    }
+    // tên ngân hàng gõ trước
+    const b = matchBank(text);
+    if (b) return startScope(b);
+    // số tiền đơn lẻ
+    const amt = parseAmount(text);
+    if (amt) { st.keep = { amount: amt, content: null }; return botSay(`Mình ghi nhận ${fmtMoney(amt)}. Bạn muốn chuyển cho ai? Nhập tên, số điện thoại hoặc số tài khoản nhé.`); }
+    const q = norm(text);
+    if (ALIAS_ACCTS[q]) { const w = guard(); setPhase('busy'); const t = addTyping(); await w(800); t.remove(); return showInfo(ALIAS_ACCTS[q]); }
+    if (!looksLikeName(text)) {
+      hideBlocks();
+      return botSay(`Không tìm thấy thông tin chuyển tiền từ “${text.trim()}”. Bạn kiểm tra và nhập lại tên, số tài khoản, số thẻ hoặc số điện thoại giúp mình nhé.`);
+    }
+    const res = searchName(text);
+    if (res.length) return showNameResults(res, 'Bạn muốn chuyển tiền cho ai?');
+    return askBankFor(text);
+  }
+  async function startScope(bank) {
+    st.scope = bank; st.lookup = null;
+    setPhase('busy'); hideBlocks();
+    await botSay('Bạn muốn chuyển tiền cho ai?', 650);
+    setPhase('askRec');
+  }
+  async function handleScoped(text, digits, numeric) {
+    const bank = st.scope;
+    if (numeric) {
+      addUser(fmtTyped(text));
+      if (isCard(digits) && BIN[digits.slice(0, 6)] && BIN[digits.slice(0, 6)] !== bank) { st.scope = null; return lookup(digits, text, $$('.user', tContent).pop()); }
+      st.lookup = { digits, kind: 'acct' };
+      return chooseBank(bank, true);
+    }
+    const b = matchBank(text);
+    if (b) { addUser(text); return startScope(b); }
+    const amt = parseAmount(text);
+    if (amt) { addUser(fmtMoney(amt)); st.keep = { amount: amt, content: null }; return botSay(`Mình ghi nhận ${fmtMoney(amt)}. Bạn muốn chuyển cho ai ở ${BANKS[bank].name}?`); }
     addUser(text);
-    await botSay('Bản demo này hỗ trợ luồng gõ dãy số. Bạn thử nhập số điện thoại, số tài khoản hoặc số thẻ nhé.');
+    if (!looksLikeName(text)) return botSay(`Mình chưa hiểu “${text.trim()}”. Bạn nhập tên hoặc số tài khoản người nhận ở ${BANKS[bank].name} nhé.`);
+    const res = searchName(text, bank);
+    if (res.length) return showNameResults(res, 'Bạn muốn chuyển tiền cho ai?', true);
+    setPhase('busy');
+    await botSay(`Chưa có người nhận tên ${text.trim()} ở ${BANKS[bank].name}. Bạn nhập số tài khoản hoặc số thẻ nhé.`, 750);
+    setPhase('askRec'); input.placeholder = 'Nhập số tài khoản, số thẻ';
   }
   function matchBank(text) {
     const q = norm(text).replace(/^ngan hang\s+/, '');
@@ -394,7 +547,12 @@
     const w = guard();
     closeSheets();
     if (!typed) addUser(BANKS[bank].name);
-    if (!st.lookup) return;
+    if (!st.lookup) {
+      st.scope = bank;
+      setPhase('busy'); hideBlocks();
+      await botSay(`Bạn nhập số tài khoản hoặc số thẻ của người nhận ở ${BANKS[bank].name} nhé.`, 700);
+      setPhase('askRec'); input.placeholder = 'Nhập số tài khoản, số thẻ'; return;
+    }
     setPhase('busy');
     const t = addTyping();
     await w(800);
@@ -417,7 +575,7 @@
   }
   async function showInfo(rec) {
     const w = guard();
-    st.rec = rec; st.amount = null; st.content = `${SENDER} chuyen tien`;
+    st.rec = rec; st.amount = null; st.content = `${SENDER} chuyen tien`; st.scope = null;
     if (st.keep) {
       const k = st.keep; st.keep = null;
       st.content = k.content || st.content;
@@ -629,7 +787,7 @@
 
   function resetTransfer() {
     st.gen++; clearTimers();
-    Object.assign(st, { phase: 'idle', lookup: null, rec: null, src: SOURCES[0], amount: null, content: null, edit: null, slowUsed: false });
+    Object.assign(st, { phase: 'idle', lookup: null, rec: null, src: SOURCES[0], amount: null, content: null, edit: null, slowUsed: false, keep: null, pending: null, scope: null });
     dock.classList.remove('editing');
     closeKb(true); closeSheets(); closeConfirm(); hideCoach(true);
     tContent.innerHTML = '';
@@ -762,10 +920,14 @@
   function syncHasText() { chatbox.classList.toggle('has-text', !!input.value.trim()); }
 
   // ================= THỬ NHANH =================
+  let triesTab = 'num';
   function renderTries() {
-    const html = TRIES.map(([n, d]) => `<button class="try" data-n="${n}"><code>${n}</code><span>${d}</span></button>`).join('');
+    const list = triesTab === 'num' ? TRIES : TRIES_TEXT;
+    const tabs = `<div class="tries-tabs"><button class="tt${triesTab === 'num' ? ' on' : ''}" data-tab="num">Gõ dãy số</button><button class="tt${triesTab === 'text' ? ' on' : ''}" data-tab="text">Gõ chữ / tên</button></div>`;
+    const html = tabs + list.map(([n, d]) => `<button class="try" data-n="${esc(n)}"><code>${esc(n)}</code><span>${d}</span></button>`).join('');
     ['#triesList', '#triesListM'].forEach(id => { const x = $(id); if (x) x.innerHTML = html; });
     $$('.try').forEach(b => b.addEventListener('click', () => tryNumber(b.dataset.n)));
+    $$('.tt').forEach(b => b.addEventListener('click', () => { triesTab = b.dataset.tab; renderTries(); }));
   }
   async function tryNumber(n) {
     $('#mSheet').classList.remove('open');

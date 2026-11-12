@@ -29,3 +29,20 @@ Gõ vào ô chat rồi gửi (Enter / nút gửi), hoặc bấm các dòng mẫu
 Sau khi có người nhận: nhập số tiền (`500000`, `500k`, `1tr`…) → block xác nhận kiểu LPBank với chip [Sửa số tiền] [Sửa nội dung] [Sửa nguồn tiền] → [Tiếp tục] → bottom sheet Xác nhận chuyển tiền (Gate 9) → [Xác thực giao dịch] → bubble “Xác nhận chuyển tiền” + bill kết quả (Chia sẻ / Lịch sử GD / Lưu người nhận), chip [Thực hiện lại] [Chuyển tiền mới]. Mỗi lúc chỉ hiển thị 1 block chính, block cũ ẩn đi.
 
 Đang dở luồng (đang hỏi số tiền hoặc ở block xác nhận) mà gõ một người nhận mới (ví dụ `0987 654 321`) → app hỏi “Bạn đang chuyển tiền cho … Bạn có muốn đổi người nhận sang … không?” với 2 lựa chọn [Đổi người nhận] / [Tiếp tục với …]. Đổi → tra lại người nhận mới, giữ số tiền và nội dung đã nhập. Dòng người nhận trên thẻ không còn icon > (không sửa trực tiếp).
+
+## Luồng gõ chữ / tên
+
+Panel bên trái có tab **Gõ chữ / tên** để bấm thử nhanh.
+
+| Gõ | Kết quả |
+|---|---|
+| `Nguyễn Văn A` | Danh sách người nhận trùng tên, dòng cuối [Ngân hàng khác] |
+| `Trần Thị Hương` | Khớp 1 người — vẫn hiện danh sách 1 dòng để chọn |
+| `Vietcombank` → `Nguyễn Thị Linh` | Gõ ngân hàng trước → hỏi người nhận → tìm theo tên trong NH đó, dòng cuối [Nhập số tài khoản]; không khớp → hỏi STK |
+| `Phạm Minh Khôi` | Tên không khớp ai → hỏi ngân hàng → hỏi STK ở NH đó |
+| `dfgh ??? kk` | Không tìm thấy thông tin, mời nhập lại |
+| `nguyenvana` | Liền không dấu khớp tên → danh sách |
+| `tuanpham88` | Liền không dấu khớp tài khoản định danh → thẻ thông tin |
+| `Nguyễn Văn A 19033456789` | Chữ + số → ưu tiên STK → thẻ thông tin |
+| `Minh 0912345678 0451000456789` | 2 dãy số → hỏi chuyển đến số nào |
+| `chuyển 200k cho Vy` | Tách số tiền + tên → chọn Vy nào → tự điền 200.000đ, vào thẳng block xác nhận |
