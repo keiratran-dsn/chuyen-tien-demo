@@ -210,16 +210,29 @@
   function addTyping() { return append(el('<div class="bot anim"><div class="glass bubble-box"><div class="typing"><i></i><i></i><i></i></div></div></div>')); }
   function toText(wrap, text) {
     const box = wrap.firstElementChild;
-    const w0 = box.offsetWidth, h0 = box.offsetHeight;
+    const r0 = box.getBoundingClientRect();
     box.innerHTML = `<div class="bubble">${esc(text)}</div>`;
+    const bub = box.firstElementChild;
     box.style.width = 'auto'; box.style.height = 'auto';
-    const w1 = box.offsetWidth, h1 = box.offsetHeight;
-    box.style.width = w0 + 'px'; box.style.height = h0 + 'px'; box.firstElementChild.style.opacity = '0';
+    // Đo bằng số thực rồi làm tròn lên: Safari làm tròn offsetWidth xuống → chữ bị xuống dòng và bị cắt
+    const r1 = box.getBoundingClientRect();
+    const w1 = Math.ceil(r1.width) + 1, h1 = Math.ceil(r1.height);
+    // Cố định khổ chữ ở kích thước cuối trong lúc khung đang giãn ra, để chữ không reflow
+    bub.style.width = w1 + 'px';
+    box.style.width = r0.width + 'px'; box.style.height = r0.height + 'px'; bub.style.opacity = '0';
     box.offsetWidth;
     box.style.transition = 'width .36s cubic-bezier(.32,.72,0,1), height .36s cubic-bezier(.32,.72,0,1)';
     box.style.width = w1 + 'px'; box.style.height = h1 + 'px';
-    box.firstElementChild.style.transition = 'opacity .3s ease .1s'; box.firstElementChild.style.opacity = '1';
-    setTimeout(() => { box.style.width = ''; box.style.height = ''; box.style.transition = ''; scrollBottom(); }, 400);
+    bub.style.transition = 'opacity .3s ease .1s'; bub.style.opacity = '1';
+    let done = false;
+    const finish = () => {
+      if (done) return; done = true;
+      box.style.width = ''; box.style.height = ''; box.style.transition = '';
+      bub.style.width = ''; bub.style.transition = ''; bub.style.opacity = '';
+      scrollBottom();
+    };
+    box.addEventListener('transitionend', e => { if (e.target === box && e.propertyName === 'height') finish(); });
+    setTimeout(finish, 420);
   }
   async function botSay(text, delay = 650) { const w = guard(); const t = addTyping(); await w(delay); toText(t, text); await w(380); return t; }
   function hideBlocks() {
@@ -807,10 +820,16 @@
       later(() => {
         toText(wrap, 'Bạn muốn chuyển tiền cho ai?');
         const blocks = openingBlocks(currentCase);
-        blocks.forEach((b, i) => later(() => {
-          b.classList.add('block', 'anim'); append(b);
-          $$('.fade-row', b).forEach((r, ri) => later(() => r.classList.add('in'), 140 + ri * 55));
-        }, 260 + i * 220));
+        // Gắn block ngay (không phụ thuộc timer), lệch nhịp bằng transition-delay
+        blocks.forEach((b, i) => {
+          const d = 260 + i * 220;
+          b.classList.add('block', 'anim'); b.style.transitionDelay = d + 'ms';
+          $$('.fade-row', b).forEach((r, ri) => { r.style.transitionDelay = (d + 140 + ri * 55) + 'ms'; });
+          append(b);
+          const rows = () => $$('.fade-row', b).forEach(r => r.classList.add('in'));
+          requestAnimationFrame(() => requestAnimationFrame(rows)); setTimeout(rows, 60);
+          setTimeout(() => { b.style.transitionDelay = ''; $$('.fade-row', b).forEach(r => { r.style.transitionDelay = ''; }); }, d + 1400);
+        });
         if (currentCase === 'A' && !skipCoach) later(showCoach, 260 + blocks.length * 220 + 900);
         skipCoach = false;
       }, 750);
