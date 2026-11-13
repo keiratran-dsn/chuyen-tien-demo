@@ -43,8 +43,10 @@
     techcombank: { name: 'Techcombank', full: 'Ngân hàng TMCP Kỹ Thương Việt Nam', logo: 'assets/techcombank.png', alias: ['tcb', 'techcom', 'techcombank', 'ky thuong'] },
     vcb: { name: 'Vietcombank', full: 'Ngân hàng TMCP Ngoại Thương Việt Nam', logo: 'assets/vcb.png', alias: ['vcb', 'vietcom', 'vietcombank', 'ngoai thuong'] },
     vpbank: { name: 'VPBank', full: 'Ngân hàng TMCP Việt Nam Thịnh Vượng', logo: 'assets/vpbank.png', alias: ['vpb', 'vpbank', 'vp bank'] },
+    // citad: ngân hàng chỉ kết nối chuyển tiền thường (CITAD)
+    hsbc: { name: 'HSBC', full: 'Ngân hàng TNHH MTV HSBC (Việt Nam)', logo: 'assets/hsbc.png', alias: ['hsbc'], citad: true },
   };
-  const PICKER = ['mb', 'vietinbank', 'sacombank', 'bidv', 'techcombank', 'vcb', 'vpbank'];
+  const PICKER = ['mb', 'vietinbank', 'sacombank', 'bidv', 'techcombank', 'vcb', 'vpbank', 'hsbc'];
   const SOURCES = [
     { id: 'vtp', name: 'ViettelPay', desc: 'Số dư 12.350.000đ', balance: 12350000, logo: 'assets/viettelpay.png' },
     { id: 'mm', name: 'Tiền di động', desc: 'Số dư 5.000.000đ', balance: 5000000, logo: 'assets/mobile-money.png' },
@@ -78,6 +80,18 @@
   const BIN = { '970436': 'vcb', '970407': 'techcombank', '970418': 'bidv', '970422': 'mb', '970415': 'vietinbank', '970403': 'sacombank', '970432': 'vpbank' };
   const NOT_EXIST = { acct: '21510000123457', bank: 'bidv' };
   const SLOW_NO = '21510000123456';
+  // ---- Chuyển tiền thường (CITAD) ----
+  const CITAD_FEE = 3000;
+  const CITAD_WARN = 'Chuyển tiền thường (Giao dịch được xử lý trong vòng 1-3 ngày làm việc)';
+  const CITAD_SHEET = { img: 'assets/il-citad.png', title: 'Giao dịch chuyển tiền thường', text: 'Ngân hàng đã chọn chỉ hỗ trợ chuyển tiền thường. Giao dịch sẽ được xử lý trong 1-3 ngày làm việc.', primary: 'Đã hiểu' };
+  const NAPAS_FAIL = {
+    maint: { img: 'assets/il-baotri.png', title: 'Ngân hàng nhận đang bảo trì', text: 'Xin vui lòng quay lại sau hoặc chọn Chuyển tiền thường (giao dịch được xử lý trong vòng 1-3 ngày làm việc)', primary: 'Chuyển tiền thường' },
+    notfound: { img: 'assets/il-notfound.png', title: 'Không tìm thấy thông tin người nhận qua chuyển tiền nhanh', text: 'Xin vui lòng kiểm tra lại thông tin người nhận. Nếu thông tin chính xác, hãy chọn Chuyển tiền thường (giao dịch được xử lý trong vòng 1-3 ngày làm việc)', primary: 'Chuyển tiền thường' },
+    fail: { img: 'assets/il-notfound.png', title: 'Truy vấn thông tin người nhận không thành công', text: 'Không kết nối được tới ngân hàng thụ hưởng. Vui lòng thử lại sau hoặc chọn Chuyển tiền thường (giao dịch được xử lý trong vòng 1-3 ngày làm việc)', primary: 'Chuyển tiền thường' },
+  };
+  // STK MBBank giả lập lỗi Napas → gợi ý chuyển tiền thường
+  const NAPAS_FAIL_ACCT = { '0451000456789': 'maint', '0451000456788': 'notfound', '0451000456787': 'fail' };
+  const RISK_ACCT = '0868999888777';
   const FAKE_NAMES = ['LE THI HOA', 'TRAN THI MAI', 'PHAM VAN NAM', 'DO THU HA', 'HOANG MINH TUAN', 'VU THI LAN', 'NGO DUC ANH'];
   const SENDER = 'Ngan';
 
@@ -96,6 +110,7 @@
   const RECENT = [
     { name: 'NGUYEN THI LINH', bank: 'vcb', acct: '0071000312345', kind: 'acct', desc: 'Vietcombank · 0071 0003 xxxx', last: { amount: 500000, content: 'Ngan chuyen tien an trua' } },
     { name: 'TRAN VAN TUAN', bank: 'vtm', acct: '0912345678', kind: 'phone', desc: 'ViettelPay · 0912 345 xxx', last: { amount: 200000, content: 'Ngan chuyen tien' } },
+    { name: 'NGUYEN VAN B', bank: 'hsbc', acct: '1902130476154611', kind: 'acct', desc: 'HSBC · 1902 1304 xxxx', last: { amount: 100000, content: 'Ngan chuyen tien' } },
   ];
   const TRIES = [
     ['0912 345 678', 'SĐT có trong lịch sử'],
@@ -183,8 +198,8 @@
   function toast(msg) { toastEl.textContent = msg; toastEl.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => toastEl.classList.remove('show'), 2200); }
 
   // ================= TRẠNG THÁI HỘI THOẠI =================
-  const PH = { idle: 'Nhập/dán thông tin chuyển tiền', askBank: 'Nhập tên ngân hàng', askAmount: 'Nhập số tiền', askRec: 'Nhập tên hoặc số tài khoản', askPick: 'Nhập/dán thông tin chuyển tiền', confirm: 'Nhập/dán thông tin chuyển tiền', done: 'Nhập/dán thông tin chuyển tiền', busy: 'Nhập/dán thông tin chuyển tiền' };
-  const st = { gen: 0, phase: 'idle', lookup: null, rec: null, src: SOURCES[0], amount: null, content: null, edit: null, slowUsed: false, keep: null, pending: null, scope: null };
+  const PH = { idle: 'Nhập/dán thông tin chuyển tiền', askBank: 'Nhập tên ngân hàng', askAmount: 'Nhập số tiền', askName: 'Nhập tên chủ tài khoản', askRec: 'Nhập tên hoặc số tài khoản', askPick: 'Nhập/dán thông tin chuyển tiền', confirm: 'Nhập/dán thông tin chuyển tiền', done: 'Nhập/dán thông tin chuyển tiền', busy: 'Nhập/dán thông tin chuyển tiền' };
+  const st = { gen: 0, phase: 'idle', lookup: null, rec: null, src: SOURCES[0], amount: null, content: null, edit: null, slowUsed: false, keep: null, pending: null, scope: null, citadRec: null };
   function setPhase(p) {
     st.phase = p; if (!st.edit) input.placeholder = PH[p] || PH.idle;
     if (typeof setKbMode === 'function' && p !== 'busy' && !st.edit) setKbMode(p === 'askAmount' ? 'num' : 'abc');
@@ -254,32 +269,43 @@
     const ch = $('[data-choose]', n); if (ch) ch.addEventListener('click', last ? last.fn : openBankSheet);
     return n;
   }
+  // Chuyển tiền thường: nguồn tiền cố định ViettelPay (không đổi được) + cảnh báo dưới người nhận
+  function srcRow(s, locked) {
+    return locked
+      ? `<div class="row static-row fade-row"><img class="bank" src="${s.logo}" alt=""><div class="row-text"><div class="row-name">${esc(s.name)}</div><div class="row-desc">${esc(s.desc)}</div></div></div>`
+      : `<div class="row fade-row" data-src><img class="bank" src="${s.logo}" alt=""><div class="row-text"><div class="row-name">${esc(s.name)}</div><div class="row-desc">${esc(s.desc)}</div></div>${chev}</div>`;
+  }
+  const citadWarn = () => `<div class="cf-warn fade-row">${ICONS.time}<span>${esc(CITAD_WARN)}</span></div>`;
   function infoBlock() {
     const r = st.rec, s = st.src;
     const n = el(`<div class="bot"><div class="glass list">
       <div class="list-head fade-row"><h3>Thông tin chuyển tiền</h3></div>
-      <div class="row fade-row" data-src><img class="bank" src="${s.logo}" alt=""><div class="row-text"><div class="row-name">${esc(s.name)}</div><div class="row-desc">${esc(s.desc)}</div></div>${chev}</div>
+      ${srcRow(s, r.citad)}
       <div class="sepline fade-row">${ICONS.sep}<i></i></div>
       <div class="row static-row fade-row">${logo(r.bank)}<div class="row-text"><div class="row-name">${esc(r.name)}</div><div class="row-desc">${esc(recDesc(r))}</div></div></div>
+      ${r.citad ? citadWarn() : ''}
     </div></div>`);
-    $('[data-src]', n).addEventListener('click', openSrcSheet);
+    const sr = $('[data-src]', n); if (sr) sr.addEventListener('click', openSrcSheet);
     return n;
   }
+  const fee = () => st.rec && st.rec.citad ? CITAD_FEE : 0;
+  const feeText = () => fee() ? `Phí giao dịch ${fmtMoney(fee())}` : 'Miễn phí giao dịch';
   function confirmBlock() {
     const r = st.rec, s = st.src;
     const n = el(`<div class="bot"><div class="glass list">
       <div class="cf-title fade-row">Bạn vui lòng xác nhận thông tin chuyển tiền.</div>
-      <div class="cf-group fade-row"><div class="cf-label">Số tiền chuyển</div><div class="cf-line"><div class="cf-amount">${fmtMoney(st.amount)}</div><button class="cf-edit" data-edit="amount" aria-label="Sửa số tiền">${ICONS.edit}</button></div><div class="cf-label">${esc(vnWords(st.amount))} · Miễn phí giao dịch</div></div>
+      <div class="cf-group fade-row"><div class="cf-label">Số tiền chuyển</div><div class="cf-line"><div class="cf-amount">${fmtMoney(st.amount)}</div><button class="cf-edit" data-edit="amount" aria-label="Sửa số tiền">${ICONS.edit}</button></div><div class="cf-label">${esc(vnWords(st.amount))} · ${feeText()}</div></div>
       <div class="divider fade-row"></div>
-      <div class="row fade-row" data-src><img class="bank" src="${s.logo}" alt=""><div class="row-text"><div class="row-name">${esc(s.name)}</div><div class="row-desc">${esc(s.desc)}</div></div>${chev}</div>
+      ${srcRow(s, r.citad)}
       <div class="sepline fade-row">${ICONS.sep}<i></i></div>
       <div class="row static-row fade-row">${logo(r.bank)}<div class="row-text"><div class="row-name">${esc(r.name)}</div><div class="row-desc">${esc(recDesc(r))}</div></div></div>
+      ${r.citad ? citadWarn() : ''}
       <div class="divider fade-row"></div>
       <div class="cf-group fade-row"><div class="cf-label">Nội dung</div><div class="cf-line"><div class="cf-value">${esc(st.content)}</div><button class="cf-edit" data-edit="content" aria-label="Sửa nội dung">${ICONS.edit}</button></div></div>
       <button class="cf-btn fade-row" data-go>Tiếp tục</button>
     </div></div>`);
     $('[data-go]', n).addEventListener('click', openConfirm);
-    $('[data-src]', n).addEventListener('click', openSrcSheet);
+    const sr = $('[data-src]', n); if (sr) sr.addEventListener('click', openSrcSheet);
     $$('[data-edit]', n).forEach(b => b.addEventListener('click', () => startEdit(b.dataset.edit)));
     return n;
   }
@@ -288,7 +314,9 @@
   function setChips(mode) {
     chipsEl.innerHTML = ''; chipsEl.dataset.mode = mode;
     const defs = mode === 'edit'
-      ? [['Sửa số tiền', null, () => startEdit('amount')], ['Sửa nội dung', null, () => startEdit('content')], ['Sửa nguồn tiền', null, openSrcSheet]]
+      ? [['Sửa số tiền', null, () => startEdit('amount')], ['Sửa nội dung', null, () => startEdit('content')], st.rec && st.rec.citad ? ['Sửa tên người nhận', null, () => startEdit('name')] : ['Sửa nguồn tiền', null, openSrcSheet]]
+      : mode === 'name'
+      ? [['Sửa tên người nhận', null, () => startEdit('name')]]
       : mode === 'done'
       ? [['Thực hiện lại', null, () => run(redoTransfer)], ['Chuyển tiền mới', null, () => run(newTransfer)]]
       : [['Dán', 'copy', pasteClipboard], ['Tải ảnh', 'album', openGallery], ['Chụp ảnh', 'camera', openCamera]];
@@ -503,6 +531,8 @@
     const g0 = st.gen;
     while (st.phase === 'busy') { await sleep(120); if (g0 !== st.gen) return; }
     if (st.edit) return handleEdit(text);
+    if (st.phase === 'sheet') return;
+    if (st.phase === 'askName') return handleName(text);
     if (st.phase === 'askSwitch') { addUser(text); return botSay(`Bạn chọn [Đổi người nhận] hoặc [Tiếp tục với ${st.rec.name}] giúp mình nhé.`); }
     if (['askAmount', 'confirm'].includes(st.phase) && st.rec && numeric && looksLikeRecipient(digits)) return askSwitch(digits, text);
     if (st.phase === 'askAmount') return handleAmount(text);
@@ -597,6 +627,10 @@
     if (digitRuns.length === 1) {
       const d = digitRuns[0];
       if (KNOWN_ACCTS[d]) { const w = guard(); setPhase('busy'); const t = addTyping(); await w(800); t.remove(); return showInfo(KNOWN_ACCTS[d]); }
+      // STK + tên ngân hàng gõ cùng lúc (“1902 1304 7615 4611 HSBC”) → tra luôn, không hỏi ngân hàng
+      const rest = text.split(/\s+/).filter(t => !/^[\d.\-]+$/.test(t)).join(' ');
+      const b = rest && !isPhone(d) && !isCard(d) && matchBank(rest);
+      if (b) { st.scope = null; st.lookup = { digits: d, kind: 'acct' }; return chooseBank(b, true); }
       return lookup(d, text, userEl);
     }
     // tên ngân hàng gõ trước
@@ -756,7 +790,91 @@
       setPhase('askBank'); input.placeholder = 'Nhập lại số tài khoản'; return;
     }
     t.remove();
-    showInfo({ name: fakeName(d + bank), bank, acct: d, kind: 'acct' });
+    if (BANKS[bank].citad) { st.citadRec = { bank, acct: d, kind: 'acct' }; return openCitadSheet(CITAD_SHEET, askCitadName); }
+    const fail = bank === 'mb' && NAPAS_FAIL_ACCT[d];
+    if (fail) { st.citadRec = { bank, acct: d, kind: 'acct' }; return openCitadSheet(NAPAS_FAIL[fail], askCitadName); }
+    showInfo({ name: d === RISK_ACCT ? 'TRAN VAN HUNG' : fakeName(d + bank), bank, acct: d, kind: 'acct', risk: d === RISK_ACCT });
+  }
+
+  // ================= CHUYỂN TIỀN THƯỜNG (CITAD) =================
+  let sheetPrimary = null;
+  function openCitadSheet(cfg, onPrimary) {
+    const s = $('#citadSheet');
+    $('.cs-il', s).src = cfg.img;
+    $('.cs-title', s).textContent = cfg.title;
+    $('.cs-text', s).textContent = cfg.text;
+    $('.cs-primary', s).textContent = cfg.primary;
+    sheetPrimary = onPrimary;
+    hideBlocks(); setPhase('sheet'); input.blur();
+    openSheet('#citadSheet');
+  }
+  function citadSheetOpen() { return $('#citadSheet').classList.contains('open'); }
+  function citadPrimary() { if (!citadSheetOpen()) return; const fn = sheetPrimary; sheetPrimary = null; closeSheets(); run(fn); }
+  function citadBack() { if (!citadSheetOpen()) return; sheetPrimary = null; closeSheets(); run(askRecipientAgain); }
+  async function askRecipientAgain() {
+    st.rec = null; st.lookup = null; st.citadRec = null; st.amount = null; st.keep = null; st.scope = null;
+    setPhase('busy'); hideBlocks(); setChips('input');
+    await botSay('Bạn muốn chuyển tiền cho ai?', 500);
+    setPhase('idle');
+  }
+  async function askCitadName() {
+    setPhase('busy');
+    await botSay('Bạn nhập tên chủ tài khoản (in hoa, không dấu) giúp mình nhé. Nhập chính xác để tránh giao dịch bị hoàn trả.', 600);
+    setPhase('askName'); setChips('input');
+  }
+  const toAcctName = t => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toUpperCase().replace(/\s+/g, ' ').trim();
+  const validName = n => /^[A-Z]+( [A-Z]+)+$/.test(n) || /^[A-Z]{2,}$/.test(n);
+  async function handleName(text) {
+    const nm = toAcctName(text);
+    if (!validName(nm)) { addUser(text); return botSay('Tên chủ tài khoản chỉ gồm chữ cái, không có số hay ký tự đặc biệt. Bạn nhập lại giúp mình nhé.'); }
+    addUser(nm);
+    return showInfo({ ...st.citadRec, name: nm, citad: true });
+  }
+  // Chọn lại người nhận chuyển tiền thường từ “Gần đây” → tên lấy từ giao dịch trước
+  function pickCitadRecent(r) {
+    run(async () => {
+      addUser(`${r.name} · ${BANKS[r.bank].name}`);
+      st.citadRec = { bank: r.bank, acct: r.acct, kind: r.kind };
+      const w = guard(); setPhase('busy'); const t = addTyping(); await w(800); t.remove();
+      openCitadSheet(CITAD_SHEET, async () => {
+        setPhase('busy');
+        await botSay('Tên người nhận lấy từ giao dịch trước. Bạn kiểm tra lại để tránh giao dịch bị hoàn trả nhé.', 600);
+        await showInfo({ ...st.citadRec, name: r.name, citad: true, prefilled: true });
+      });
+    });
+  }
+  // Tài khoản rủi ro cao → chặn giao dịch
+  async function riskBlocked() {
+    const w = guard();
+    setPhase('busy'); closeKb();
+    const t = addTyping(); await w(900);
+    toText(t, 'Tài khoản người nhận có dấu hiệu rủi ro cao liên quan đến lừa đảo, gian lận. Viettel Money đã chặn giao dịch đến tài khoản này để bảo vệ bạn.');
+    await w(300);
+    addBlock(riskBlock(true));
+    st.rec = null; st.amount = null;
+    setPhase('idle'); setChips('input');
+    setTimeout(() => scrollBottom(), 420);
+  }
+  function riskBlock(withDetail) {
+    const n = el(`<div class="bot"><div class="glass list">
+      ${withDetail ? `<div class="choose-row fade-row" data-rk="detail">Xem chi tiết ${chev}</div><div class="divider fade-row"></div>` : ''}
+      <div class="choose-row fade-row" data-rk="other">Chọn người nhận khác ${chev}</div>
+    </div></div>`);
+    const d = $('[data-rk="detail"]', n);
+    if (d) d.addEventListener('click', () => run(async () => {
+      if (st.phase === 'busy') return;
+      addUser('Xem chi tiết');
+      setPhase('busy');
+      await botSay('Tài khoản người nhận bị cảnh báo bất thường vì một trong các lý do sau:\n• Thông tin không khớp với cơ sở dữ liệu quốc gia\n• Nằm trong danh sách cảnh báo của cơ quan chức năng\n• Thuộc danh sách nghi ngờ rủi ro của ngân hàng quản lý', 600);
+      addBlock(riskBlock(false));
+      setPhase('idle');
+    }));
+    $('[data-rk="other"]', n).addEventListener('click', () => run(async () => {
+      if (st.phase === 'busy') return;
+      addUser('Chọn người nhận khác');
+      await askRecipientAgain();
+    }));
+    return n;
   }
 
   async function pickRecipient(r, bubble) {
@@ -766,17 +884,18 @@
   async function showInfo(rec) {
     const w = guard();
     st.rec = rec; st.amount = null; st.content = `${SENDER} chuyen tien`; st.scope = null;
+    if (rec.citad) st.src = SOURCES.find(s => s.id === 'vtp');
     if (st.keep) {
       const k = st.keep; st.keep = null;
       st.content = k.content || st.content;
-      if (k.amount && !amountError(k.amount)) { st.amount = k.amount; return showConfirmBlock(); }
+      if (k.amount && !amountError(k.amount)) { st.amount = k.amount; return rec.risk ? riskBlocked() : showConfirmBlock(); }
     }
     setPhase('busy');
     addBlock(infoBlock());
     await w(250);
     await botSay('Bạn muốn chuyển bao nhiêu tiền?', 600);
     setPhase('askAmount');
-    setChips('input');
+    setChips(rec.prefilled ? 'name' : 'input');
     autoAmountKb();
   }
 
@@ -784,6 +903,7 @@
     if (!v) return 'Số tiền chưa hợp lệ. Bạn nhập lại, ví dụ 500000 hoặc 500k nhé.';
     if (v < 2000) return 'Số tiền tối thiểu mỗi giao dịch là 2.000đ. Bạn nhập lại nhé.';
     if (v > 100000000) return 'Số tiền tối đa mỗi giao dịch là 100.000.000đ. Bạn nhập lại nhé.';
+    if (st.rec && st.rec.citad && v + CITAD_FEE > st.src.balance) return `Số dư ${st.src.name} không đủ để chuyển ${fmtMoney(v)} và phí ${fmtMoney(CITAD_FEE)}. Bạn nhập số tiền nhỏ hơn nhé.`;
     if (v > st.src.balance) return `Số dư ${st.src.name} không đủ (${fmtMoney(st.src.balance)}). Bạn nhập số tiền nhỏ hơn hoặc đổi nguồn tiền nhé.`;
     return null;
   }
@@ -793,6 +913,7 @@
     const err = amountError(v);
     if (err) return botSay(err);
     st.amount = v;
+    if (st.rec.risk) return riskBlocked();
     await showConfirmBlock();
   }
   async function showConfirmBlock() {
@@ -808,12 +929,12 @@
 
   // ---------- sửa thông tin ----------
   function startEdit(field) {
-    if (st.phase !== 'confirm') return;
+    if (st.phase !== 'confirm' && !(field === 'name' && st.phase === 'askAmount')) return;
     st.edit = field;
     dock.classList.add('editing');
-    $('#replyLabel').textContent = field === 'amount' ? 'Chỉnh sửa số tiền' : 'Chỉnh sửa nội dung';
-    input.value = field === 'amount' ? fmtMoney(st.amount).replace('đ', '') : st.content;
-    input.placeholder = field === 'amount' ? 'Nhập số tiền mới' : 'Nhập nội dung mới';
+    $('#replyLabel').textContent = field === 'amount' ? 'Chỉnh sửa số tiền' : field === 'name' ? 'Chỉnh sửa tên người nhận' : 'Chỉnh sửa nội dung';
+    input.value = field === 'amount' ? fmtMoney(st.amount).replace('đ', '') : field === 'name' ? st.rec.name : st.content;
+    input.placeholder = field === 'amount' ? 'Nhập số tiền mới' : field === 'name' ? 'Nhập tên chủ tài khoản' : 'Nhập nội dung mới';
     setKbMode(field === 'amount' ? 'num' : 'abc');
     syncHasText(); updateInset();
     input.focus();
@@ -829,6 +950,17 @@
       const err = amountError(v);
       if (err) return botSay(err);
       st.amount = v;
+    } else if (st.edit === 'name') {
+      const nm = toAcctName(text);
+      if (!validName(nm)) { addUser(`Sửa tên người nhận: ${text}`); return botSay('Tên chủ tài khoản chỉ gồm chữ cái, không có số hay ký tự đặc biệt. Bạn nhập lại giúp mình nhé.'); }
+      addUser(`Sửa tên người nhận: ${nm}`);
+      st.rec = { ...st.rec, name: nm, prefilled: false };
+      if (st.phase === 'askAmount') {
+        cancelEdit();
+        const w = guard(); setPhase('busy'); addBlock(infoBlock()); await w(250);
+        await botSay('Bạn muốn chuyển bao nhiêu tiền?', 500);
+        setPhase('askAmount'); setChips('input'); autoAmountKb(); return;
+      }
     } else {
       addUser(`Sửa nội dung: ${text}`); st.content = text;
     }
@@ -841,12 +973,12 @@
     const list = $('#bankList');
     const nq = norm(q);
     const keys = PICKER.filter(k => !nq || norm(BANKS[k].name).includes(nq) || norm(BANKS[k].full).includes(nq) || BANKS[k].alias.some(a => a.includes(nq)));
-    list.innerHTML = keys.length ? keys.map(k => `<button class="bs-row" data-bank="${k}"><span class="bs-logo"><img src="${BANKS[k].logo}" alt=""></span><span class="bs-text"><span class="bs-name">${BANKS[k].name}</span><span class="bs-full">${BANKS[k].full}</span></span>${ICONS.arrow}</button>`).join('')
+    list.innerHTML = keys.length ? keys.map(k => `<button class="bs-row" data-bank="${k}"><span class="bs-logo"><img src="${BANKS[k].logo}" alt=""></span><span class="bs-text"><span class="bs-name">${BANKS[k].name}${BANKS[k].citad ? `<i class="bs-clock" title="Chỉ hỗ trợ chuyển tiền thường">${ICONS.time}</i>` : ''}</span><span class="bs-full">${BANKS[k].full}</span></span>${ICONS.arrow}</button>`).join('')
       : '<div class="bs-empty">Không tìm thấy ngân hàng phù hợp</div>';
     $$('.bs-row', list).forEach(b => b.addEventListener('click', () => run(() => chooseBank(b.dataset.bank))));
   }
   function openSheet(id) { closeKb(); screen.classList.add('sheet-open'); const s = $(id); s.classList.add('open'); s.setAttribute('aria-hidden', 'false'); }
-  function closeSheets() { screen.classList.remove('sheet-open'); $$('.bank-sheet, .src-sheet').forEach(s => { s.classList.remove('open'); s.setAttribute('aria-hidden', 'true'); }); }
+  function closeSheets() { sheetPrimary = null; screen.classList.remove('sheet-open'); $$('.bank-sheet, .src-sheet').forEach(s => { s.classList.remove('open'); s.setAttribute('aria-hidden', 'true'); }); }
   function openBankSheet() { if (st.phase !== 'askBank' || coachStep) return; $('#bankSearch').value = ''; renderBanks(); openSheet('#bankSheet'); }
   function openSrcSheet() {
     if (!['askAmount', 'confirm'].includes(st.phase)) return;
@@ -877,10 +1009,11 @@
     const r = st.rec, s = st.src;
     const n = el(`<div class="bot bill-wrap"><div class="bill">
       <div class="bill-head fade-row">${ICONS.tick}<span>Chuyển tiền thành công</span></div>
-      <div class="cf-group fade-row"><div class="cf-amount">${fmtMoney(st.amount)}</div><div class="cf-label">${esc(vnWords(st.amount))} · Miễn phí giao dịch</div></div>
+      <div class="cf-group fade-row"><div class="cf-amount">${fmtMoney(st.amount)}</div><div class="cf-label">${esc(vnWords(st.amount))} · ${feeText()}</div></div>
       <div class="divider fade-row"></div>
       <div class="bill-rows fade-row">
         <div class="bill-row"><span>Người nhận</span><div class="bill-val"><b>${esc(r.name)}</b><small>${esc(recDesc(r))}</small></div></div>
+        ${r.citad ? '<div class="bill-row"><span>Hình thức</span><div class="bill-val"><b>Chuyển tiền thường</b><small>Xử lý trong 1-3 ngày làm việc</small></div></div>' : ''}
         <div class="bill-row"><span>Nguồn tiền</span><b>${esc(s.name)}</b></div>
         <div class="bill-row"><span>Nội dung</span><b>${esc(st.content)}</b></div>
         <div class="bill-row"><span>Thời gian</span><b>${nowText()}</b></div>
@@ -918,7 +1051,7 @@
   async function newTransfer() {
     if (st.phase !== 'done') return;
     addUser('Chuyển tiền mới');
-    st.rec = null; st.lookup = null; st.amount = null; st.content = null; st.keep = null; st.pending = null;
+    st.rec = null; st.lookup = null; st.amount = null; st.content = null; st.keep = null; st.pending = null; st.citadRec = null;
     setPhase('busy'); hideBlocks(); setChips('input');
     await botSay('Bạn muốn chuyển tiền cho ai? Nhập số điện thoại, số tài khoản hoặc số thẻ nhé.', 500);
     setPhase('idle');
@@ -936,9 +1069,11 @@
       <div class="cl-sec"><h4>Chi tiết giao dịch</h4><div class="cl-rows">
         <div class="cl-row">Tài khoản nhận<b class="cl-acc"><img src="${BANKS[r.bank].logo}" alt="">${BANKS[r.bank].name}</b></div>
         <div class="cl-row">${label}<b>${esc(acctDisp(r))}</b></div>
+        ${r.citad ? '<div class="cl-row">Hình thức chuyển tiền<b>Chuyển tiền thường</b></div>' : ''}
         <div class="cl-row">Nội dung giao dịch<b>${esc(st.content)}</b></div>
+        ${r.citad ? `<div class="cl-row">Phí giao dịch<b>${fmtMoney(CITAD_FEE)}</b></div>` : ''}
       </div></div>`;
-    $('#confirmTotal').innerHTML = fmtMoney(st.amount).replace('đ', '<small>đ</small>');
+    $('#confirmTotal').innerHTML = fmtMoney(st.amount + fee()).replace('đ', '<small>đ</small>');
     const L = $('#confirmLayer'); L.classList.add('open'); L.setAttribute('aria-hidden', 'false');
   }
   function closeConfirm() { const L = $('#confirmLayer'); L.classList.remove('open'); L.setAttribute('aria-hidden', 'true'); }
@@ -963,6 +1098,7 @@
       $$('.row', recent).forEach(row => row.addEventListener('click', () => {
         if (st.phase === 'busy' || coachStep) return;
         const r = RECENT[+row.dataset.i];
+        if (BANKS[r.bank].citad) return pickCitadRecent(r);
         run(async () => { addUser(`Chuyển lại cho ${r.name}`); st.rec = r; st.amount = r.last.amount; st.content = r.last.content; await showConfirmBlock(); });
       }));
       return [saved, recent];
@@ -978,7 +1114,7 @@
 
   function resetTransfer() {
     st.gen++; clearTimers();
-    Object.assign(st, { phase: 'idle', lookup: null, rec: null, src: SOURCES[0], amount: null, content: null, edit: null, slowUsed: false, keep: null, pending: null, scope: null });
+    Object.assign(st, { phase: 'idle', lookup: null, rec: null, src: SOURCES[0], amount: null, content: null, edit: null, slowUsed: false, keep: null, pending: null, scope: null, citadRec: null });
     dock.classList.remove('editing');
     closeKb(true); closeSheets(); closeConfirm(); hideCoach(true);
     tContent.innerHTML = '';
@@ -1120,6 +1256,20 @@
 
   // ================= THỬ NHANH =================
   let triesTab = 'num';
+  const TRIES_CITAD = [
+    ['1902 1304 7615 4611 HSBC', 'NH chỉ hỗ trợ chuyển tiền thường → nhập tên'],
+    ['Gần đây · NGUYEN VAN B', 'Chọn lại người nhận HSBC → tên lấy từ GD trước', () => tryCitadRecent()],
+    ['0451 000 456 789 MBBank', 'Ngân hàng nhận đang bảo trì'],
+    ['0451 000 456 788 MBBank', 'Không tìm thấy người nhận qua chuyển nhanh'],
+    ['0451 000 456 787 MBBank', 'Truy vấn thông tin người nhận lỗi'],
+    ['0868 999 888 777 Techcombank', 'TK rủi ro → chặn sau khi nhập số tiền'],
+  ];
+  async function tryCitadRecent() {
+    if (currentCase !== 'C') { setCase('C'); await sleep(2200); }
+    const rows = $$('.row', tContent).filter(r => r.textContent.includes('NGUYEN VAN B'));
+    if (rows.length) rows[rows.length - 1].click();
+    else toast('Mở lại màn chuyển tiền (Case C) để thấy mục Gần đây.');
+  }
   const TRIES_AI = [
     ['Dán · đủ thông tin', 'STK + ngân hàng + số tiền → xác nhận luôn', () => { aiPasteKey = 'full'; pasteClipboard(true); }],
     ['Dán · thiếu số tiền', 'STK + ngân hàng → hỏi số tiền', () => { aiPasteKey = 'noAmount'; pasteClipboard(true); }],
@@ -1130,11 +1280,11 @@
     ['Ảnh · bị mờ', 'AI không đọc được ảnh', () => sendImage('blur')],
   ];
   function renderTries() {
-    const list = triesTab === 'num' ? TRIES : triesTab === 'text' ? TRIES_TEXT : TRIES_AI;
-    const tabs = `<div class="tries-tabs"><button class="tt${triesTab === 'num' ? ' on' : ''}" data-tab="num">Gõ dãy số</button><button class="tt${triesTab === 'text' ? ' on' : ''}" data-tab="text">Gõ chữ / tên</button><button class="tt${triesTab === 'ai' ? ' on' : ''}" data-tab="ai">Dán / Ảnh (AI)</button></div>`;
+    const list = { num: TRIES, text: TRIES_TEXT, ai: TRIES_AI, citad: TRIES_CITAD }[triesTab];
+    const tabs = `<div class="tries-tabs"><button class="tt${triesTab === 'num' ? ' on' : ''}" data-tab="num">Gõ dãy số</button><button class="tt${triesTab === 'text' ? ' on' : ''}" data-tab="text">Gõ chữ / tên</button><button class="tt${triesTab === 'ai' ? ' on' : ''}" data-tab="ai">Dán / Ảnh (AI)</button><button class="tt${triesTab === 'citad' ? ' on' : ''}" data-tab="citad">Chuyển tiền thường</button></div>`;
     const html = tabs + list.map(([n, d], i) => `<button class="try" data-n="${esc(n)}" data-i="${i}"><code>${esc(n)}</code><span>${d}</span></button>`).join('');
     ['#triesList', '#triesListM'].forEach(id => { const x = $(id); if (x) x.innerHTML = html; });
-    $$('.try').forEach(b => b.addEventListener('click', () => triesTab === 'ai' ? tryAi(TRIES_AI[+b.dataset.i][2]) : tryNumber(b.dataset.n)));
+    $$('.try').forEach(b => b.addEventListener('click', () => { const it = list[+b.dataset.i]; return it[2] ? tryAi(it[2]) : tryNumber(it[0]); }));
     $$('.tt').forEach(b => b.addEventListener('click', () => { triesTab = b.dataset.tab; renderTries(); }));
   }
   async function tryAi(fn) {
@@ -1242,7 +1392,9 @@
     });
 
     // sheets
-    $('#sheetDim').addEventListener('click', closeSheets);
+    $('#sheetDim').addEventListener('click', () => { if (!citadSheetOpen()) closeSheets(); });
+    $('#citadSheet .cs-primary').addEventListener('click', citadPrimary);
+    $('#citadSheet .cs-back').addEventListener('click', citadBack);
     $('#bankClose').addEventListener('click', closeSheets);
     $('#srcClose').addEventListener('click', closeSheets);
     $('#bankSearch').addEventListener('input', e => renderBanks(e.target.value));

@@ -62,3 +62,16 @@ Theo section Figma `3 · Dán / Tải ảnh / Chụp ảnh (AI) - Luồng chi ti
   - không đọc được → tin nhắn hướng dẫn, chip vẫn ở dưới để thử lại.
 - Tên người nhận lấy từ tra cứu, không lấy tên trong văn bản/ảnh.
 - Thử nhanh: tab **Dán / Ảnh (AI)** trong “Thử nhanh các case”.
+
+## Chuyển tiền thường (CITAD)
+
+Thử nhanh ở tab **Chuyển tiền thường** trong bảng "Thử nhanh".
+
+| Luồng | Cách thử | Diễn biến |
+|---|---|---|
+| 1 · NH chỉ hỗ trợ chuyển tiền thường | Gõ `1902 1304 7615 4611 HSBC` (hoặc gõ STK rồi chọn HSBC trong danh sách — có icon đồng hồ) | Bottom sheet "Giao dịch chuyển tiền thường" → **Đã hiểu**: hỏi tên chủ tài khoản (tự chuyển in hoa, không dấu) → thông tin + cảnh báo → số tiền → xác nhận (phí 3.000đ, cảnh báo, chip Sửa tên người nhận). **Quay lại**: hỏi lại "Bạn muốn chuyển tiền cho ai?" |
+| 2 · Chọn lại từ Gần đây | Case C → Gần đây → NGUYEN VAN B · HSBC | Sheet → Đã hiểu → "Tên người nhận lấy từ giao dịch trước…" → thông tin → hỏi số tiền (chip Sửa tên người nhận) |
+| 3 · Napas lỗi → gợi ý chuyển tiền thường | `0451 000 456 789 MBBank` (bảo trì), `…788` (không tìm thấy qua chuyển nhanh), `…787` (truy vấn lỗi) | Sheet lỗi → **Chuyển tiền thường**: hỏi tên như luồng 1; **Quay lại**: hỏi lại người nhận |
+| 4 · Tài khoản rủi ro | `0868 999 888 777 Techcombank` → nhập số tiền | Chặn giao dịch → Xem chi tiết (lý do) / Chọn người nhận khác |
+
+Nguồn tiền của chuyển tiền thường cố định là ViettelPay; tổng thanh toán = số tiền + 3.000đ.

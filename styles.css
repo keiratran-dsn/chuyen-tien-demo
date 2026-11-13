@@ -589,3 +589,20 @@ button { font: inherit; color: inherit; border: 0; background: none; padding: 0;
 .paste-btns button:active { filter: brightness(.92); transform: scale(.98); }
 .pb-allow { background: rgba(255,255,255,.16); }
 .pb-deny { background: #6DD2F7; font-weight: 600; }
+
+/* ===== Chuyển tiền thường (CITAD) ===== */
+.bubble { white-space: pre-line; }
+.citad-sheet { padding: 0 16px 34px; text-align: center; }
+.cs-il { width: 150px; height: 150px; margin: 16px auto 16px; display: block; object-fit: contain; }
+.cs-title { font-size: 18px; line-height: 22px; font-weight: 700; color: var(--text); }
+.cs-text { margin-top: 8px; font-size: 14px; line-height: 18px; color: var(--sub); }
+.cs-primary { margin-top: 24px; width: 100%; }
+.cs-back { height: 44px; margin-top: 8px; color: var(--red); font-size: 16px; line-height: 20px; font-weight: 500; }
+.cf-warn { display: flex; align-items: flex-start; gap: 8px; padding: 12px 16px; border-radius: 8px; background: #FFF8EC; border: 1px solid #FFE5B3; font-size: 14px; line-height: 18px; color: var(--text); text-align: left; }
+.cf-warn svg { flex: 0 0 16px; width: 16px; height: 16px; margin-top: 1px; }
+.cf-warn svg path { stroke: #F08C00; stroke-width: 1.6; }
+.bs-name .bs-clock { display: inline-flex; vertical-align: -2px; margin-left: 6px; }
+.bs-clock svg { width: 16px; height: 16px; }
+.bs-clock svg path { stroke: #8E8E93; stroke-width: 1.6; }
+.tries-tabs { flex-wrap: wrap; }
+.tries-tabs .tt { flex: 1 1 calc(50% - 3px); }
